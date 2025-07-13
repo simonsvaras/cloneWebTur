@@ -298,6 +298,17 @@ export function addMatches(){
     
 }
 
+export function addMatchToRound(sectionName, roundIndex){
+    latestHistoryChange.viewportHeight = matchesPositions.get(sectionName).get(roundIndex).element.closest("section.matches").offsetHeight;
+    const offset = matchesPositions.get(sectionName).get(roundIndex).createMatch();
+    adjustSectionCanvasHeight(sectionName, offset);
+    latestHistoryChange.type = "add_matches";
+    latestHistoryChange.section = sectionName;
+    latestHistoryChange.roundIndex = roundIndex;
+    latestHistoryChange.target = [[offset, matchesPositions.get(sectionName).get(roundIndex).getMatch(offset).matchId]];
+    pushHistoryObject();
+}
+
 export function adjustSectionCanvasHeight(sectionName, lastAddedMatchOffset, shrinkingAllowed = false){
     const section = document.querySelector(`.tournament_subdivision[data-sectionName='${sectionName}']`);
     console.log(section, sectionName);

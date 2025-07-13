@@ -415,6 +415,9 @@ span.connecting_dot_active {
     vertical-align: middle;
     cursor: pointer;
 }
+.round_add_match_button {
+    margin-left: 4px;
+}
 
 .round_grid_snap {
     width: 150px;
