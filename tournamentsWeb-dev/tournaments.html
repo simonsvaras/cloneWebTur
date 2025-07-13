@@ -66,7 +66,6 @@
                                     </select>
                                     <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
                                     <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
-                                    <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/748/748113.png" alt="Add match">
                                 </div>
                             </div>
                         </div>
@@ -83,7 +82,6 @@
                                     </select>
                                     <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
                                     <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
-                                    <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/748/748113.png" alt="Add match">
                                 </div>
                             </div>
                         </div>
@@ -210,8 +208,9 @@
                     <section class="connectorGrid">
                         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"></svg>
                     </section>
+                    
                 </section>
-    
+                <div class="section_resizer"></div>
             </section>
         </template>
         <template id="matchTemplate">
@@ -223,7 +222,7 @@
                 <span class="right_connecting_dot"></span>
             </div>
         </template>
-        <svg width="0%" height="0%" xmlns="http://www.w3.org/2000/svg"> <!--definitions for global use-->
+        <svg width="0%" height="0%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;"> <!--definitions for global use-->
             <defs>
                 <pattern id="firstRow" width="450" height="195" patternUnits="userSpaceOnUse">
                     <path d="M 0 0
@@ -265,6 +264,14 @@
         </svg>
 
     </section>
+
+    <div class="general_actions_toolbar">
+        <img id="general_action_undo" src="https://cdn-icons-png.flaticon.com/512/3808/3808687.png" title="Undo (Ctrl + Z)">
+        <img id="general_action_redo" src="https://cdn-icons-png.flaticon.com/512/3808/3808699.png" title="Redo (Ctrl + Y)"> 
+        <img id="general_action_zoom_in" src="https://cdn-icons-png.flaticon.com/512/5953/5953491.png" title="Zoom in (Ctrl +)">
+        <img id="general_action_zoom_out" src="https://cdn-icons-png.flaticon.com/512/5953/5953501.png" title="Zoom out (Ctrl -)"> 
+    </div>
+
     <div id="section_add_popup_container">
         <div id="section_add_popup">
             
@@ -498,6 +505,6 @@
 
 
     <script type="module" src="tournaments.js"></script>
-    <script src="userTesting/userTestingPlugin.js"></script><!--disable if not user testing-->
+    <!--<script src="userTesting/userTestingPlugin.js"></script>--><!--disable if not user testing-->
 </body>
 </html>

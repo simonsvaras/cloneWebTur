@@ -29,9 +29,13 @@ export class Section {
         sectionElement.querySelector(".matches").addEventListener("mousemove", processMouseMove);
         sectionElement.querySelector(".viewport").addEventListener("contextmenu", function(event){this.openContextMenu(event, true)}.bind(this));
         sectionElement.querySelector(".viewport").addEventListener("scroll", function(event){this.scrollLegend(event)}.bind(this));
-        sectionElement.querySelector(".section_collapse_icon").addEventListener("click", section_collapse);
-        sectionElement.querySelector(".section_delete_icon").addEventListener("click", section_delete);
-
+        sectionElement.querySelector(".section_collapse_icon").closest(".section_control_icon").addEventListener("click", section_collapse);
+        sectionElement.querySelector(".section_delete_icon").closest(".section_control_icon").addEventListener("click", section_delete);
+        sectionElement.querySelector(".section_resizer").addEventListener('mousedown', function () {
+            global.resizingSection = this;
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = "n-resize";
+          }.bind(this));
     }
 
     setName(name, history = false){
@@ -156,7 +160,6 @@ export class Section {
                         </select>
                         <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
                         <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
-                        <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/748/748113.png" alt="Add match">
 
                     </div>
                 </div>
@@ -467,11 +470,16 @@ function moveDraggedLine(event){
     const rect= matchesPositions.get(draggedConnector.match.getPosition().sectionName).getGrid().getBoundingClientRect();
     console.log(rect, rect.left);
 
-    //console.log(event.pageY, document.documentElement.scrollTop, rect, dragActiveMatchesGrid.parentElement.scrollTop)
+    
+    let startX = draggedConnector.startingPointX;
+    let startY = draggedConnector.startingPointY;
+    let endX = (event.pageX  - rect.left) / global.zoomLevel;
+    let endY = (event.pageY - document.documentElement.scrollTop - rect.y) / global.zoomLevel;
+    console.log(startX, startY, endX, endY, global.zoomLevel);
     if(draggedConnector.connector.line.id === "tmpConnector")
-        modifyLine("tmpConnector", draggedConnector.startingPointX, draggedConnector.startingPointY, event.pageX - rect.left, event.pageY - document.documentElement.scrollTop - rect.y);
+        modifyLine("tmpConnector", startX, startY, endX, endY);
     else{
-        modifyLine(draggedConnector.connector.generatedId, draggedConnector.startingPointX, draggedConnector.startingPointY, event.pageX - rect.left, event.pageY - document.documentElement.scrollTop - rect.y);
+        modifyLine(draggedConnector.connector.generatedId, startX, startY, endX, endY);
     }
     
 }
@@ -484,7 +492,7 @@ function snapToGridPreview(event){
     //let rect = dragActiveMatchesGrid.getBoundingClientRect();
     const positions = getMatchPosition(global.draggedMatch);
     const rect = matchesPositions.get(positions.sectionName).getGrid();
-    let snapX = matchesPositions.get(positions.sectionName).isLocked() ? positions.roundIndex*CONSTANT.columnSnapPx : (Math.floor((event.pageX + rect.parentElement.scrollLeft)/CONSTANT.columnSnapPx)*CONSTANT.columnSnapPx);
+    let snapX = matchesPositions.get(positions.sectionName).isLocked() ? positions.roundIndex*CONSTANT.columnSnapPx : (Math.floor(((event.pageX + rect.parentElement.scrollLeft)/global.zoomLevel)/CONSTANT.columnSnapPx)*CONSTANT.columnSnapPx);
 
     let columnIndex = Number(snapX/CONSTANT.columnSnapPx);
     
@@ -503,7 +511,7 @@ function snapToGridPreview(event){
     let snappingMode = getColumnSnappingMode(positions.sectionName, columnIndex);
     
     const matchSnapPx = matchesPositions.get(positions.sectionName).get(columnIndex).getSettings().snappingOffset;
-    const relativeMousePos = event.pageY - document.documentElement.scrollTop - rect.getBoundingClientRect().y;
+    const relativeMousePos = (event.pageY - document.documentElement.scrollTop - rect.getBoundingClientRect().y) / global.zoomLevel;
     console.log("SNAPPING", snappingMode, m, columnIndex, positions, matchSnapPx, relativeMousePos);
     snappingMode = matchesPositions.get(positions.sectionName).get(columnIndex).getSettings().snappingMode;
     switch(snappingMode){

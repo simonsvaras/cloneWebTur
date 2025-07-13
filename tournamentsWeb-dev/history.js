@@ -133,6 +133,7 @@ export function undo(direction = "backwards", steps = 0){
         return;
 
     let lastState = undefined;
+    console.log("passed");
     if(direction === "backwards"){
         lastState = historyStack.pop();  
         console.log(historyStack, lastState);
