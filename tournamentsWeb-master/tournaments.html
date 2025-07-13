@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="tournaments.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://tropse.pro/files/img/tropse_icon-white.png">
+    <title>Tropse | Tournament Creator</title>
+</head>
+<body class="space">
+    <section id="tournament_container">
+        <section id="tournament_toolbar">
+            <div id="add_matches_containter">
+                Add 
+                <input type="text" list="matches_numbers" id="matches_number" oninput="this.value = this.value.replace(/^0+|[^\d]/g, ''); if(Number(this.value) > 1024){this.value='1024'}">
+                    <datalist id="matches_numbers">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>4</option>
+                        <option>8</option>
+                        <option>16</option>
+                        <option>32</option>
+                        <option>64</option>
+                        <option>128</option>
+                        <option>256</option>
+                    </datalist>
+                Matches to round
+                <select name="add_match_round" id="add_match_round">
+                    <option value="1" selected>1</option>
+                    <option value="2">2</option>
+                  </select>
+                in section 
+                <select name="add_match_section" id="add_match_section">
+                    <option value="Section1">Section1</option>
+                  </select>
+                <button id="add_matches_button">ADD</button>
+            </div>
+        </section>
+        <section class="tournament_subdivision" data-sectionName="Section1">
+            <section class="tournament_delimiter">
+                <input type="text" class="section_name" value="Section1">
+                <hr>
+                <div class="section_control">
+                    <span class="section_control_icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/7345/7345031.png" class="section_collapse_icon">
+                    </span>
+                    <span class="section_control_icon">
+                        <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" class="section_delete_icon">
+                    </span>
+                </div>
+            </section>
+            <section class="tournament_legend">
+                <section class="tournament_legend_content">
+                    <section class="rounds_settings">
+                        <div class="round_setting" data-round="1">
+                            <div class="round_setting_content">
+                                <input type="text" class="legend_round_name" value="Round 1">
+                                <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
+                                <div>
+                                    <select class="round_grid_snap">
+                                        <option value="Initial" selected="selected">Initial</option>
+                                        <option value="Elimination">Elimination</option>
+                                        <option value="Same as previous">Same as previous</option>
+                                        <option value="Free">Free</option>
+                                    </select>
+                                    <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
+                                    <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="round_setting" data-round="2">
+                            <div class="round_setting_content">
+                                <input type="text" class="legend_round_name" value="Round 2">
+                                <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
+                                <div>
+                                    <select class="round_grid_snap">
+                                        <option value="Initial">Initial</option>
+                                        <option value="Elimination">Elimination</option>
+                                        <option value="Same as previous">Same as previous</option>
+                                        <option value="Free" selected="selected">Free</option>
+                                    </select>
+                                    <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
+                                    <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </section>
+            <section class="viewport">
+                <section class="grid">
+                    <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100%" height="195" fill="url(#firstRow)"/>
+                        <rect width="100%" height="100%" fill="url(#smallGrid)" y="195"/>
+                    </svg>
+                </section>
+                <section class="section_toolbar">
+                    <div class="fullscreen">
+                        <img src="https://cdn-icons-png.flaticon.com/512/1549/1549457.png" alt="fullscreen toggle">
+                    </div>
+                    <div class="column_lock">
+                        <img src="https://cdn-icons-png.flaticon.com/512/747/747315.png" alt="column lock toggle">
+                    </div>
+                </section>
+                <section class="matches">
+                    <div class="round_column" data-round="1">
+                        <div class="match">
+                            <div><p class="team_name team_name1">Random</p><p class="score">0</p></div>
+                            <div><p class="team_name team_name2">Random</p><p class="score">1</p></div>
+                            <span class="left_connecting_dot upper"></span>
+                            <span class="left_connecting_dot lower"></span>
+                            <span class="right_connecting_dot"></span>
+                            
+                        </div>
+                        <div class="match">
+                            <div><p class="team_name team_name1">Random</p><p class="score">0</p></div>
+                            <div><p class="team_name team_name2">Random</p><p class="score">1</p></div>
+                            <span class="left_connecting_dot upper"></span>
+                            <span class="left_connecting_dot lower"></span>
+                            <span class="right_connecting_dot"></span>
+                            <!--<div id="match_selected_border"></div>-->
+                        </div>
+                        <div class="match">
+                            <div><p class="team_name team_name1">Random</p><p class="score">0</p></div>
+                            <div><p class="team_name team_name2">Random</p><p class="score">1</p></div>
+                            <span class="left_connecting_dot upper"></span>
+                            <span class="left_connecting_dot lower"></span>
+                            <span class="right_connecting_dot"></span>
+                        </div>
+                    </div>
+                    <div class="round_column" data-round="2">
+                        <div class="match">
+                            <div><p class="team_name team_name1">Random</p><p class="score">0</p></div>
+                            <div><p class="team_name team_name2">Random</p><p class="score">1</p></div>
+                            <span class="left_connecting_dot upper"></span>
+                            <span class="left_connecting_dot lower"></span>
+                            <span class="right_connecting_dot"></span>
+                        </div>
+                        <div class="match">
+                            <div><p class="team_name team_name1">Random</p><p class="score">0</p></div>
+                            <div><p class="team_name team_name2">Random</p><p class="score">1</p></div>
+                            <span class="left_connecting_dot upper"></span>
+                            <span class="left_connecting_dot lower"></span>
+                            <span class="right_connecting_dot"></span>
+                        </div>
+                    </div>
+                    <div class="add_round_column">
+                        <div class="add_round_button">  
+                            +
+                        </div>
+                    </div>
+                    
+                </section>
+
+                <section class="connectorGrid">
+                    
+                </section>
+            </section>
+
+        </section>
+
+        <template id="section_template">
+            <section class="tournament_subdivision" data-sectionName="Unnamed section">
+                <section class="tournament_delimiter">
+                    <input type="text" class="section_name" value="unnamed section">
+                    <hr>
+                    <div class="section_control">
+                        <span class="section_control_icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/7345/7345031.png" class="section_collapse_icon">
+                        </span>
+                        <span class="section_control_icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" class="section_delete_icon">
+                        </span>
+                    </div>
+                </section>
+                <section class="tournament_legend">
+                    <section class="tournament_legend_content">
+                        <section class="rounds_settings">
+                        </section>
+                    </section>
+                </section>
+                <section class="viewport">
+                    <section class="grid">
+                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg">
+                            <defs>
+                            </defs>
+                            <rect width="100%" height="195" fill="url(#firstRow)" />
+                            <rect width="100%" height="100%" fill="url(#smallGrid)" y="195"/>
+                        </svg>
+                    </section>
+                    <section class="section_toolbar">
+                        <div class="fullscreen">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1549/1549457.png" alt="fullscreen toggle">
+                        </div>
+                        <div class="column_lock">
+                            <img src="https://cdn-icons-png.flaticon.com/512/747/747315.png" alt="column lock toggle">
+                        </div>
+                    </section>
+                    <section class="matches">
+                        <div class="add_round_column">
+                            <div class="add_round_button">  
+                                +
+                            </div>
+                        </div>
+                    </section>
+    
+                    <section class="connectorGrid">
+                        <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"></svg>
+                    </section>
+                </section>
+    
+            </section>
+        </template>
+        <template id="matchTemplate">
+            <div class="match">
+                <div><p class="team_name team_name1">Random</p><p class="score">0</p></div>
+                <div><p class="team_name team_name2">Random</p><p class="score">1</p></div>
+                <span class="left_connecting_dot upper"></span>
+                <span class="left_connecting_dot lower"></span>
+                <span class="right_connecting_dot"></span>
+            </div>
+        </template>
+        <svg width="0%" height="0%" xmlns="http://www.w3.org/2000/svg"> <!--definitions for global use-->
+            <defs>
+                <pattern id="firstRow" width="450" height="195" patternUnits="userSpaceOnUse">
+                    <path d="M 0 0
+                    H 450 V 195 H-450" fill="none" stroke="#8b8b8b" stroke-width="0.5"/>
+                </pattern>
+                <pattern id="smallGrid" width="450" height="200" patternUnits="userSpaceOnUse" y="195">
+                    <path d="M 0 0
+                    H 450 V 200
+                    " fill="none" stroke="#8b8b8b" stroke-width="0.5"/>
+                </pattern>
+
+                <filter id="red-glow" width="1000000" height="1000000" filterUnits="userSpaceOnUse"> <!--workaround for not displaying when the line is straight-->
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur5"/>
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="blur10"/>
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="20" result="blur20"/>
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="30" result="blur30"/>
+                    <feGaussianBlur in="SourceGraphic" stdDeviation="50" result="blur50"/>
+
+                    <feMerge result="blur-merged">
+                        <feMergeNode in="blur10"/>
+                        <feMergeNode in="blur20"/>
+                        <feMergeNode in="blur30"/>
+                        <feMergeNode in="blur50"/>
+                    </feMerge>
+
+                    <!--<feColorMatrix result="red-blur" in="blur-merged" type="matrix"
+                                    values="1 0 0 0 0
+                                            0 0.06 0 0 0
+                                            0 0 0.44 0 0
+                                            0 0 0 1 0" />-->
+                    <feMerge>
+                        <!-- <feMergeNode in="red-blur"/>       largest blurs coloured red--> 
+                        <feMergeNode in="blur5"/>          <!-- smallest blur left white -->
+                        <feMergeNode in="SourceGraphic"/>  <!-- original white text -->
+                    </feMerge>
+                </filter>
+            </defs>
+            
+        </svg>
+
+    </section>
+    <div id="section_add_popup_container">
+        <div id="section_add_popup">
+            
+        </div>
+    </div>
+
+    <template id="contextMenuMatchTemplate">
+        <menu class="contextMenu">
+            <li data-action="this.delete(true)">Delete match</li>
+            <li data-action="this.select()">Select</li>
+            <li data-action="this.showMatchDetailsWidget()">Edit match details</li>
+        </menu>
+    </template>
+    <template id="contextMenuSelectedMatchTemplate">
+        <menu class="contextMenu">
+            <li data-action="this.delete(true)">Delete match</li>
+            <li data-action="this.deselect()">Deselect</li>
+            <li data-action="this.enableRelegation(true)">Toggle relegation</li>
+            <li data-action="this.showMatchDetailsWidget()">Edit match details</li>
+        </menu>
+    </template>
+    <template id="contextMenuSelectedConnectorTemplate">
+        <menu class="contextMenu">
+            <li data-action="this.delete(true)">Delete connector</li>
+            <li data-action="this.deselect()">Deselect</li>
+            <li data-action="this.scrollLeftMatchIntoView()">Go to left match</li>
+            <li data-action="this.viewLeftMatchDetails()">View left match details</li>
+            <li data-action="this.scrollRightMatchIntoView()">Go to right match</li>
+            <li data-action="this.viewRightMatchDetails()">View right match details</li>
+        </menu>
+    </template>
+    <section class="widget" id="match_edit_widget_popover" >
+        <div class="widget_blocker"></div>
+        <div class="widget_section">
+            <div id="match_edit_widget_container" class="widget_container">
+                <div class="widget_sticky_header">
+                    <img src="https://tropse.pro/files/img/tropse-close.png" class="widget_close" id="match_edit_widget_close" />
+                    <h3 class="widget_heading">Editing match ID <p id="match_edit_widget_id">#</p>
+                    </h3>
+                </div>
+                <div class="widget_content">
+                    <div id="match_edit_widget_teams_container">
+                        <div class="team_selector_container">
+                            <p class="team_selector_title">Team1:</p>
+                            <div class="widget_select_scrollable" id="widget_team_selector1">
+                                <!-- generované položky týmů -->
+                                <div class="shrinkable">
+                                    <img src="https://tropse.pro/files/img/add-button.png"
+                                        style="width: 25px; height: 25px; margin-left: 7px;"><input type="text" class="team_filter"
+                                        placeholder="Type to filter" maxlength="32">
+                                </div>
+                                <div data-teamId="Random" class="team_selected shrinkable" id="team_random1">
+                                    <p>Random</p>
+                                </div>
+                                <div data-teamId="TBD" id="team_TBD1" class="shrinkable">
+                                    <p>TBD</p>
+                                </div>
+                            </div>
+            
+                        </div>
+                        <!-- VS logo mezi týmy -->
+                        <div class="versus_container">
+                            <img src="/media/VS.png" alt="VS" class="vs_logo" />
+                        </div>
+                        <!--<p class="versus">VS</p>-->
+                        <div class="team_selector_container">
+                            <p class="team_selector_title">Team2:</p>
+                            <div class="widget_select_scrollable" id="widget_team_selector2">
+                                <div class="shrinkable">
+                                    <img src="https://tropse.pro/files/img/add-button.png"
+                                        style="width: 25px; height: 25px; margin-left: 7px;"><input type="text" class="team_filter"
+                                        placeholder="Type to filter" maxlength="32">
+                                </div>
+                                <div data-teamId="Random" class="team_selected shrinkable" id="team_random2">
+                                    <p>Random</p>
+                                </div>
+                                <div data-teamId="TBD" id="team_TBD2" class="shrinkable">
+                                    <p>TBD</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="match_edit_widget_settings">
+                    <div id="match_edit_widget_format_and_start_container">
+                    <div id="match_edit_widget_format_container" class="tile_selector">
+                        <!-- label nad dlaždicemi -->
+                        <p class="selector_label">Format:
+                            <img src="media/tropse-warning-BLUE.png"
+                                 id="bo_mismatch_icon"
+                                 class="mismatch_warning"
+                                 title="This setting does not correspond with round settings">
+                        </p>
+
+                        <!-- dlaždice v samostatném řádku -->
+                        <div class="tile_row">
+                            <label class="container">
+                                BO1
+                                <input type="radio"
+                                       id="match_edit_widget_format_select_bo1"
+                                       name="match_edit_widget_format_select"
+                                       value="1"
+                                       checked>
+                            </label>
+                            <label class="container">
+                                BO3
+                                <input type="radio"
+                                       id="match_edit_widget_format_select_bo3"
+                                       name="match_edit_widget_format_select"
+                                       value="3">
+                            </label>
+                            <label class="container">
+                                BO5
+                                <input type="radio"
+                                       id="match_edit_widget_format_select_bo5"
+                                       name="match_edit_widget_format_select"
+                                       value="5">
+                            </label>
+                        </div>
+
+
+                    </div>
+                    <div id="match_edit_widget_start_container" class="tile_selector">
+                        <p class="selector_label">Start:</p>
+                        <div class="tile_row">
+                            <label class="container">
+                                TBA
+                                <input type="radio"
+                                       id="match_edit_widget_start_select_tba"
+                                       name="match_edit_widget_start_select"
+                                       value="TBA"
+                                       checked>
+                            </label>
+                            <label class="container">
+                                ASAP
+                                <input type="radio"
+                                       id="match_edit_widget_start_select_asap"
+                                       name="match_edit_widget_start_select"
+                                       value="ASAP">
+                            </label>
+                            <label class="container">
+                                Fixed time
+                                <input type="radio"
+                                       id="match_edit_widget_start_select_fixed"
+                                       name="match_edit_widget_start_select"
+                                       value="fixed">
+                            </label>
+                        </div>
+
+                        <div class="fixed_time_row">
+                            <input type="datetime-local"
+                                   id="match_edit_widget_start_time"
+                                   name="meeting-time"
+                                   min="2025-07-04T00:00"
+                                   max="2026-07-04T23:59">
+                        </div>
+
+                        <img src="media/tropse-warning-BLUE.png"
+                             id="start_mismatch_icon"
+                             class="mismatch_warning"
+                             title="This setting does not correspond with round settings">
+                    </div>
+                    </div>
+            
+                    <div id="match_edit_widget_relegation_container">
+                        <h2>Promotion</h2>
+                        <span class="team_goes_to_text">
+                            <p>Winner goes to:
+                            <div class="select_team" id="select_team_promotion">SELECT</div>
+                            </p>
+                        </span>
+                        <h2>Relegation</h2>
+                        <!--disabled by default, odklikavatko bude treba jako checkbox primo u h2
+                                kdyz ho uzivatel zapne, ma na vyber na jednom radku: loser goes to |select|
+                                po kliknuti na select vybere zapas z jakekoliv sekce a widget se opet ukaze
+                                select se pak zmeni na ID zapasu
+                                -->
+                        <span class="team_goes_to_text">
+                            <p>Loser goes to:
+                            <div class="select_team" id="select_team_relegation">SELECT</div>
+                            </p>
+                        </span>
+            
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="widget" id="round_edit_widget_popover">
+        <div class="widget_blocker"></div>
+        <div class="widget_section">
+            <div class="widget_container">
+                <div class="widget_sticky_header">
+                    <img src="https://tropse.pro/files/img/tropse-close.png" class="widget_close" id="round_edit_widget_close" />
+                    <h3 class="widget_heading">Editing round: <p id="round_edit_round_id">ERROR</p> in section <p id="round_edit_section_id">ERROR</p>
+                    </h3>
+                </div>
+                <div class="widget_content">
+                    <h3>Default format:</h3>
+                    <div class="tile_selector">
+                        <label class="container">BO1
+                            <input type="radio" checked="checked" name="round_format" value="1">
+                        </label>
+                        <label class="container">BO3
+                        <input type="radio" name="round_format" value="3">
+                        </label>
+                        <label class="container">BO5
+                        <input type="radio" name="round_format" value="5">
+                        </label>
+                    </div>
+                    <h3>Default start mode:</h3>
+                    <div class="tile_selector">
+                        <label class="container">ASAP
+                            <input type="radio" checked="checked" name="round_start_type" value="ASAP">
+                        </label>
+                        <div style="position: relative;">
+                            <label class="container" id="round_edit_widget_start_custom_label">SET TIME
+                                <input type="radio" name="round_start_type" value="custom">
+                            </label>
+                            <p id="edit_time_prompt">Edit time</p>
+                            <input type="datetime-local" id="round_edit_widget_start_time" name="meeting-time" value="2018-06-12T19:30"
+                            min="2018-06-07T00:00" max="2018-06-14T00:00"/>
+                        </div>
+                    </div>
+                    <p id="round_edit_widget_disclaimer">Changing these settings will affect all the matches in this round, including the already set up ones!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <script type="module" src="tournaments.js"></script>
+    <script src="userTesting/userTestingPlugin.js"></script><!--disable if not user testing-->
+</body>
+</html>
