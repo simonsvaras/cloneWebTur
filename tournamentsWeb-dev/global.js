@@ -7,6 +7,10 @@ class GlobalVariables{
     roundWidget = new RoundWidget(document.getElementById("round_edit_widget_popover"));
     matchWidget = new MatchWidget(document.getElementById("match_edit_widget_popover"));
     lastConnectorIdNumber = 1;
+    resizingSection = undefined; //reference to the section object /section element currently being resized
+    lastMouseX = undefined;
+    lastMouseY = undefined;
+    zoomLevel = 1.0;
 
 }
 

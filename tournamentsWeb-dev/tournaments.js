@@ -45,7 +45,6 @@ function processMouseUp(event){
         return;
     }
     else if(draggedConnector.isActive()){
-        
         if(!draggedConnector.snapped)
             dropConnector(event);
         else{
@@ -58,6 +57,11 @@ function processMouseUp(event){
         } 
         matchesPositions.get(getMatchPosition(draggedConnector.match.matchElement).sectionName).highlightCollisions();
         return;
+    }
+    else if(global.resizingSection){
+        global.resizingSection = undefined;
+        document.body.style.removeProperty("userSelect");
+        document.body.style.removeProperty("cursor");
     }
 }
 
@@ -89,7 +93,7 @@ function processClick(event){
 }
 
 function processKeyPress(event){
-    console.log("keydown", event)
+    //console.log("keydown", event)
     //document.addEventListener('keyup', (event) => {
     if (event.keyCode === 46 && global.selectedMatch){//delete key
         global.selectedMatch.delete(true);
@@ -97,20 +101,54 @@ function processKeyPress(event){
     else if (event.keyCode === 46 && global.selectedConnector){
         global.selectedConnector.delete(true);
     }
-    else if(event.ctrlKey && event.keyCode === 90 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// alt + z
+    else if(event.ctrlKey && event.keyCode === 90 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + z
         event.preventDefault();
         undo("backwards");
-        console.log(event);
     }
-    else if(event.ctrlKey && event.keyCode === 89 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// alt + y
+    else if(event.ctrlKey && event.keyCode === 89 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + y
         event.preventDefault();
         undo("forwards");
-        console.log(event);
     }
-   // });
+    else if(event.ctrlKey && event.keyCode === 107 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + "+"
+        event.preventDefault();
+        zoomIn();
+    }
+    else if(event.ctrlKey && event.keyCode === 109 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + "-"
+        event.preventDefault();
+        zoomOut();
+    }
 }
 
+function processMouseMove(event){
+    global.lastMouseX = event.clientX;
+    global.lastMouseY = event.clientY;
+    if (!global.resizingSection) return;
+    const viewport = global.resizingSection.element.querySelector(".viewport")
+    const newHeight = event.clientY - viewport.getBoundingClientRect().top;
+    viewport.style.height = `${newHeight}px`;
+}
 
+function processScroll(event){
+    console.log("scroll", global.resizingSection, global.lastMouseX, global.lastMouseY);
+    if (!global.resizingSection) return;
+        if(!global.lastMouseX || !global.lastMouseY) return;
+        const viewport = global.resizingSection.element.querySelector(".viewport");
+        const newHeight = global.lastMouseY - viewport.getBoundingClientRect().top;
+        viewport.style.height = `${newHeight}px`;
+}
+
+/*this processes mousewheel actions. It is more specific than scroll listener.
+We use it only for detecting ctrl + scroll for zooming the page.
+All scroll related actions should be hooked on scroll listener, not here*/
+function processWheel(event){
+    console.log(event);
+    if(!event.ctrlKey) return;
+    event.preventDefault();
+    const delta = Math.sign(event.deltaY);
+    console.log(delta);
+    if(delta === -1) zoomIn();
+    if(delta === 1) zoomOut();
+}
 
 
 
@@ -136,6 +174,9 @@ window.addEventListener("mouseup", processMouseUp);
 window.addEventListener("mousedown", processMouseDown);
 window.addEventListener("click", processClick);
 window.addEventListener("keydown", processKeyPress);
+window.addEventListener("mousemove", processMouseMove);
+window.addEventListener("wheel", processWheel, { passive: false });
+document.body.addEventListener("scroll", processScroll);
 
 
 function initializeMatchesPositions(){
@@ -502,6 +543,31 @@ export function closestNumber(base, factor, value) { //Thanks ChatGPT - you stol
     return closest;
 }
 
+function zoom(addition){
+    let zoom = global.zoomLevel + addition;
+    let toScale = [];
+    matchesPositions.forEach(function (section) {
+        console.log(section);
+        toScale.push(section.element.querySelector(".tournament_legend"));
+        toScale.push(section.element.querySelector(".grid"));
+        toScale.push(section.element.querySelector(".matches"));
+        toScale.push(section.element.querySelector(".connectorGrid"));
+    })
+
+    toScale.forEach(element => {
+        element.style.zoom = zoom;
+    });
+    global.zoomLevel = zoom;
+}
+export function zoomIn(){
+    if(global.zoomLevel >= 2) return;
+    zoom(0.1);
+}
+
+export function zoomOut(){
+    if(global.zoomLevel <= 0.5) return;
+    zoom(-0.1);
+}
 
 
 

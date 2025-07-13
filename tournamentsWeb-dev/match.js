@@ -483,13 +483,17 @@ export class Match {
     }
 
     recalculateConnectors(){
+        this.recalculateRightConnectors();
+        for(let lc of this.leftConnectors.values()){
+            lc.recalculate();
+        }
+    }
+
+    recalculateRightConnectors(){
         this.rightConnector.recalculate();
         if(this.rightRelegationConnector){
             console.log("if");
             this.rightRelegationConnector.recalculate(false, true);
-        }
-        for(let lc of this.leftConnectors.values()){
-            lc.recalculate();
         }
     }
 
@@ -544,7 +548,7 @@ export class Match {
             this.rightRelegationConnector = undefined;
             relegationConnectorDot.remove();
             this.matchElement.querySelectorAll(".right_connecting_dot")[0].style.top = null;
-            this.recalculateConnectors();
+            this.recalculateRightConnectors();
         }
         else{
             this.rightRelegationConnector = new Connector(undefined, this, undefined);
@@ -555,7 +559,7 @@ export class Match {
             relegationConnectorDot.addEventListener("mousedown", function(event){this.rightDotDrag(event, true)}.bind(this));
             relegationConnectorDot.style.top = "calc(50% + 25px)";
             relegationConnectorDot.style.borderColor = "red";
-            this.recalculateConnectors();
+            this.recalculateRightConnectors();
         }
         if(history){
             latestHistoryChange.type = "toggle_relegation";
@@ -572,13 +576,13 @@ export class Match {
             const x = (columnIndex)*CONSTANT.columnSnapPx + ((CONSTANT.columnSnapPx - CONSTANT.matchWidthPx)/2) + CONSTANT.matchWidthPx + CONSTANT.connectorRadiusPx;
             let y = (offset+(150/2));//half of match height
             if(this.rightRelegationConnector){y-= 36;}
-            //console.log("calculated local connector coords", x, y);
+            console.log("calculated local promotion connector coords", x, y);
             return {x: x, y:y}
         }
         else if(type === "rightRelegation"){
             const x = (columnIndex)*CONSTANT.columnSnapPx + ((CONSTANT.columnSnapPx - CONSTANT.matchWidthPx)/2) + CONSTANT.matchWidthPx + CONSTANT.connectorRadiusPx;
             const y = (offset+(150/2) +33);//half of match height +25 offset from the center
-            //console.log("calculated local connector coords", x, y);
+            console.log("calculated local relegation connector coords", x, y);
             return {x: x, y:y}
         }
         else if(type === "leftupper"){
