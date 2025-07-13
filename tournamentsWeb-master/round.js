@@ -1,6 +1,6 @@
 import { Match } from "./match.js";
 import { pushHistoryObject, discardHistory, latestHistoryChange } from "./history.js";
-import { matchesPositions, updateRoundList, closestNumber } from "./tournaments.js";
+import { matchesPositions, updateRoundList, closestNumber, addMatchToRound } from "./tournaments.js";
 import { global } from "./global.js";
 import * as CONSTANT from "./constants.js";
 
@@ -74,6 +74,7 @@ export class Round {
         this._biggestMatchOffset = 0;
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_delete_button`).addEventListener("click", function(){this.delete(true)}.bind(this));
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_settings_button`).addEventListener("click", function(){this.openSettingsWidget(true)}.bind(this));
+        HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_add_match_button`).addEventListener("click", function(){addMatchToRound(this.getSectionName(), this.getIndex())}.bind(this));
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .legend_round_name`).addEventListener("change", function(event){
             this.getSettings().setSettings(event.target.value, undefined, undefined, true, this.getSection().name+"_"+this.getIndex());
         }.bind(this))
