@@ -70,24 +70,28 @@ export class Round {
         this.settings = new RoundSettings(name, snappingOffset, snappingMode);
         this._collisionLines = [];
         this._biggestMatchOffset = 0;
+        this.counterElement = HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_match_counter`);
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_delete_button`).addEventListener("click", function(){this.delete(true)}.bind(this));
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_settings_button`).addEventListener("click", function(){this.openSettingsWidget(true)}.bind(this));
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_add_match_button`).addEventListener("click", () => addMatchToRound(this.getSectionName(), this.getIndex()));
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .legend_round_name`).addEventListener("change", function(event){
             this.getSettings().setSettings(event.target.value, undefined, undefined, true, this.getSection().name+"_"+this.getIndex());
         }.bind(this))
+        this.updateMatchCounter();
     }
 
     addMatch(offset, match){
         this.matches.set(offset, match);
         if(offset > this._biggestMatchOffset)
             this._biggestMatchOffset = offset;
+        this.updateMatchCounter();
     }
     removeMatch(offset){
         this.matches.delete(offset);
         if(this.biggestMatchOffset == offset)
             this.updateBiggestOffset();
-        
+        this.updateMatchCounter();
+
     }
 
     updateBiggestOffset(){
@@ -126,6 +130,12 @@ export class Round {
         for(let match of this.matches.values()){
             console.log(match);
             match.recalculateConnectors();
+        }
+    }
+
+    updateMatchCounter(){
+        if(this.counterElement){
+            this.counterElement.textContent = this.matches.size;
         }
     }
 
