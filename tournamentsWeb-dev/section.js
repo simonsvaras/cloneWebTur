@@ -32,6 +32,8 @@ export class Section {
         sectionElement.querySelector(".section_collapse_icon").addEventListener("click", section_collapse);
         sectionElement.querySelector(".section_delete_icon").addEventListener("click", section_delete);
 
+        this.updateInsertButtons();
+
     }
 
     setName(name, history = false){
@@ -186,6 +188,8 @@ export class Section {
             position++;
         }
 
+        this.updateInsertButtons();
+
         if(history){
             latestHistoryChange.type = "add_round";
             latestHistoryChange.section = this.name;
@@ -274,6 +278,29 @@ export class Section {
                 offset = round.biggestMatchOffset;
         }
         return offset;
+    }
+
+    updateInsertButtons(){
+        const matchesGrid = this.element.querySelector(".viewport .matches");
+        matchesGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
+
+        const rounds = matchesGrid.querySelectorAll('.round_column');
+        rounds.forEach((round, index) => {
+            if(index < rounds.length - 1){
+                const col = document.createElement('div');
+                col.classList.add('insert_round_column');
+                const btn = document.createElement('div');
+                btn.classList.add('insert_round_button');
+                btn.textContent = '+';
+                btn.dataset.index = index + 1;
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.createNewRound(e, true, parseInt(btn.dataset.index));
+                });
+                col.appendChild(btn);
+                round.insertAdjacentElement('afterend', col);
+            }
+        });
     }
 
 

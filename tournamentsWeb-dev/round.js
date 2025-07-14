@@ -206,6 +206,7 @@ export class Round {
         }
         updateRoundList(sectionName);
         matchesPositions.get(sectionName).updateSnapping(roundIndex);
+        matchesPositions.get(sectionName).updateInsertButtons();
     }
 
     openSettingsWidget(){
