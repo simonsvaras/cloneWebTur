@@ -129,8 +129,8 @@ export class Section {
 
         let legendPosition = "afterend";
         let roundPosition = "afterend";
-        let legendPlacement = legendGrid.querySelector(`.rounds_settings > div:nth-of-type(${forceIndex})`);
-        let roundPlacement = matchesGrid.querySelector(`.viewport .matches > div:nth-of-type(${forceIndex})`);
+        let legendPlacement = legendGrid.querySelector(`div[data-round='${forceIndex}']`);
+        let roundPlacement = matchesGrid.querySelector(`.round_column[data-round='${forceIndex}']`);
         if(this.count() === 0){
             legendPosition = "beforeend";
             roundPosition = "beforebegin";
@@ -138,10 +138,16 @@ export class Section {
             roundPlacement = matchesGrid.querySelector(".add_round_column");
         }
         else if(forceIndex === 0){
-            legendPlacement = legendGrid.querySelector(`div:nth-of-type(1)`);
+            legendPlacement = legendGrid.querySelector(`div[data-round='1']`);
             legendPosition = "beforebegin";
             roundPosition = "beforebegin";
-            roundPlacement = matchesGrid.querySelector(`.viewport .matches > div:nth-of-type(1)`);
+            roundPlacement = matchesGrid.querySelector(`.round_column[data-round='1']`);
+        }
+        else if(forceIndex === this.count()){
+            legendPlacement = legendGrid.querySelector(`div[data-round='${forceIndex}']`);
+            legendPosition = "afterend";
+            roundPosition = "beforebegin";
+            roundPlacement = matchesGrid.querySelector(".add_round_column");
         }
         console.log(legendPlacement);
 
