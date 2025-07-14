@@ -109,17 +109,18 @@ export class Section {
             forceIndex = this.count();
         }
         else{
-            //"roztrhnout mapu, abychom mohli kolo vlozit doprostred"
+            // Shift existing rounds and their DOM elements to make space
             const tmpcount = this.count();
             const roundElements = this.element.querySelectorAll('.tournament_legend .rounds_settings .round_setting');
-            for(let i = tmpcount-1; i>= forceIndex; i--){
-                //alert("setting " + (i) + "to " + (i+1));
-                this.set(i+1, this.get(i));
-                this.get(i+1).element.dataset.round = i+2;
-                matchesPositions.get(this.name).get(i+1).recalculateMatches();//recalculate its connectors
-                if(roundElements[i]){
-                    roundElements[i].dataset.round = i+2;
-                }
+            const roundColumns = this.element.querySelectorAll('.viewport .matches .round_column');
+            for(let i = tmpcount-1; i >= forceIndex; i--){
+                const roundObj = this.get(i);
+                this.set(i+1, roundObj);
+                this.deleteRound(i);
+                roundObj.element.dataset.round = i+2;
+                if(roundColumns[i]) roundColumns[i].dataset.round = i+2;
+                if(roundElements[i]) roundElements[i].dataset.round = i+2;
+                roundObj.recalculateMatches();
             }
         }
         console.log("FORCE INDEX", forceIndex);
