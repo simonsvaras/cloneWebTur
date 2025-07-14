@@ -1082,12 +1082,9 @@ GENERAL WIDGET
     gap: 1em;
 }
 .widget_content #round_edit_widget_disclaimer{
-    bottom: 0;
-    position: absolute;
     font-size: medium;
     text-align: center;
     left: 0;
-    padding: 1em;
 }
 .widget_content::-webkit-scrollbar{
     width: 4px;
