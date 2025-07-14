@@ -287,22 +287,36 @@ export class Section {
         legendGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
 
         const rounds = legendGrid.querySelectorAll('.round_setting');
+
         rounds.forEach((round, index) => {
-            if(index < rounds.length - 1){
+            if(index > 0){
                 const col = document.createElement('div');
                 col.classList.add('insert_round_column');
                 const btn = document.createElement('div');
                 btn.classList.add('insert_round_button');
                 btn.textContent = '+';
-                btn.dataset.index = index + 1;
+                btn.dataset.index = index;
                 btn.addEventListener('click', (e) => {
                     e.stopPropagation();
                     this.createNewRound(e, true, parseInt(btn.dataset.index));
                 });
                 col.appendChild(btn);
-                round.insertAdjacentElement('afterend', col);
+                round.insertAdjacentElement('beforebegin', col);
             }
         });
+
+        const endCol = document.createElement('div');
+        endCol.classList.add('insert_round_column');
+        const endBtn = document.createElement('div');
+        endBtn.classList.add('insert_round_button');
+        endBtn.textContent = '+';
+        endBtn.dataset.index = rounds.length;
+        endBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            this.createNewRound(e, true, parseInt(endBtn.dataset.index));
+        });
+        endCol.appendChild(endBtn);
+        legendGrid.appendChild(endCol);
     }
 
 
