@@ -161,6 +161,7 @@ function initializeMatchesPositions(){
                 matches[i].style.top = offset + "px";
                 offset += 200;
             }
+            matchesPositions.get(sectionName).get(indexRound).updateMatchCounter();
         }
     }
 }
