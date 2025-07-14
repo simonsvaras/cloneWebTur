@@ -281,9 +281,12 @@ export class Section {
 
     updateInsertButtons(){
         const matchesGrid = this.element.querySelector(".viewport .matches");
-        matchesGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
+        const legendGrid = this.element.querySelector(".tournament_legend .rounds_settings");
 
-        const rounds = matchesGrid.querySelectorAll('.round_column');
+        matchesGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
+        legendGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
+
+        const rounds = legendGrid.querySelectorAll('.round_setting');
         rounds.forEach((round, index) => {
             if(index < rounds.length - 1){
                 const col = document.createElement('div');
