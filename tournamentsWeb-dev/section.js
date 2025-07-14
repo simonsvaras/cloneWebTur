@@ -111,13 +111,15 @@ export class Section {
         else{
             //"roztrhnout mapu, abychom mohli kolo vlozit doprostred"
             const tmpcount = this.count();
+            const roundElements = this.element.querySelectorAll('.tournament_legend .rounds_settings .round_setting');
             for(let i = tmpcount-1; i>= forceIndex; i--){
                 //alert("setting " + (i) + "to " + (i+1));
                 this.set(i+1, this.get(i));
                 this.get(i+1).element.dataset.round = i+2;
                 matchesPositions.get(this.name).get(i+1).recalculateMatches();//recalculate its connectors
-                this.element.querySelector(`.tournament_legend .rounds_settings > div:nth-of-type(${i+1})`).dataset.round = i+2;
-                console.log(this.element.querySelector(`.tournament_legend .rounds_settings > div:nth-of-type(${i})`));
+                if(roundElements[i]){
+                    roundElements[i].dataset.round = i+2;
+                }
             }
         }
         console.log("FORCE INDEX", forceIndex);
