@@ -250,6 +250,29 @@ body.space .viewport{
     top: calc(50% - 156px);
 }
 
+.insert_round_column {
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.insert_round_button {
+    width: 25px;
+    height: 25px;
+    background-color: #007bff;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    border: 2px solid #e1e1e1;
+    cursor: pointer;
+}
+
+.insert_round_column:hover .insert_round_button {
+    display: flex;
+}
+
 span.right_connecting_dot {
     padding: 0;
     position: absolute;

@@ -32,6 +32,8 @@ export class Section {
         sectionElement.querySelector(".section_collapse_icon").addEventListener("click", section_collapse);
         sectionElement.querySelector(".section_delete_icon").addEventListener("click", section_delete);
 
+        this.updateInsertButtons();
+
     }
 
     setName(name, history = false){
@@ -127,8 +129,8 @@ export class Section {
 
         let legendPosition = "afterend";
         let roundPosition = "afterend";
-        let legendPlacement = legendGrid.querySelector(`.rounds_settings > div:nth-of-type(${forceIndex})`);
-        let roundPlacement = matchesGrid.querySelector(`.viewport .matches > div:nth-of-type(${forceIndex})`);
+        let legendPlacement = legendGrid.querySelector(`div[data-round='${forceIndex}']`);
+        let roundPlacement = matchesGrid.querySelector(`.round_column[data-round='${forceIndex}']`);
         if(this.count() === 0){
             legendPosition = "beforeend";
             roundPosition = "beforebegin";
@@ -136,10 +138,16 @@ export class Section {
             roundPlacement = matchesGrid.querySelector(".add_round_column");
         }
         else if(forceIndex === 0){
-            legendPlacement = legendGrid.querySelector(`div:nth-of-type(1)`);
+            legendPlacement = legendGrid.querySelector(`div[data-round='1']`);
             legendPosition = "beforebegin";
             roundPosition = "beforebegin";
-            roundPlacement = matchesGrid.querySelector(`.viewport .matches > div:nth-of-type(1)`);
+            roundPlacement = matchesGrid.querySelector(`.round_column[data-round='1']`);
+        }
+        else if(forceIndex === this.count()){
+            legendPlacement = legendGrid.querySelector(`div[data-round='${forceIndex}']`);
+            legendPosition = "afterend";
+            roundPosition = "beforebegin";
+            roundPlacement = matchesGrid.querySelector(".add_round_column");
         }
         console.log(legendPlacement);
 
@@ -185,6 +193,8 @@ export class Section {
             }
             position++;
         }
+
+        this.updateInsertButtons();
 
         if(history){
             latestHistoryChange.type = "add_round";
@@ -274,6 +284,29 @@ export class Section {
                 offset = round.biggestMatchOffset;
         }
         return offset;
+    }
+
+    updateInsertButtons(){
+        const matchesGrid = this.element.querySelector(".viewport .matches");
+        matchesGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
+
+        const rounds = matchesGrid.querySelectorAll('.round_column');
+        rounds.forEach((round, index) => {
+            if(index < rounds.length - 1){
+                const col = document.createElement('div');
+                col.classList.add('insert_round_column');
+                const btn = document.createElement('div');
+                btn.classList.add('insert_round_button');
+                btn.textContent = '+';
+                btn.dataset.index = index + 1;
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    this.createNewRound(e, true, parseInt(btn.dataset.index));
+                });
+                col.appendChild(btn);
+                round.insertAdjacentElement('afterend', col);
+            }
+        });
     }
 
 
