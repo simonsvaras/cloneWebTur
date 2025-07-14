@@ -156,12 +156,6 @@ export class Section {
                     <input type="text" class="legend_round_name" value="Round ${newRoundNumber}">
                     <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
                     <div>
-                        <select class="round_grid_snap">
-                            <option value="Initial">Initial</option>
-                            <option value="Elimination">Elimination</option>
-                            <option value="Same as previous">Same as previous</option>
-                            <option value="Free" selected="selected">Free</option>
-                        </select>
                         <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
                         <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
                         <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match">
@@ -169,7 +163,6 @@ export class Section {
                     </div>
                 </div>
             </div>`);
-        legendGrid.querySelector(`div[data-round='${newRoundNumber}'] .round_grid_snap`).addEventListener("change", snapModeChange);
         
         const roundElement = roundHTML(newRoundNumber);
         roundPlacement.insertAdjacentElement(roundPosition, roundElement);
@@ -426,7 +419,7 @@ export class Section {
 
     updateSnapping(startRoundIndex){
         for(let i = startRoundIndex; i< this.count(); i++){
-            const value = this.element.querySelector(`.rounds_settings div[data-round='${i+1}'] .round_grid_snap`).value;
+            const value = this.get(i).getSettings().snappingMode;
             console.log("roundIndex ", i, value);
             switch(value){
                 case "Free":
@@ -639,11 +632,8 @@ function roundHTML(roundNumber){
 
 
 
-export function snapModeChange(event){
-    const sectionName = event.target.closest(".tournament_subdivision").dataset.sectionname;
-    const roundIndex = event.target.closest(".round_setting").dataset.round -1;
+export function snapModeChange(sectionName, roundIndex){
     console.log(sectionName, roundIndex);
-    //musime projet vsechny nasledujici kola, muzeme totiz zmenit neco treba v pulce
+    // Update snapping for this round and subsequent rounds
     matchesPositions.get(sectionName).updateSnapping(roundIndex);
-    
 }

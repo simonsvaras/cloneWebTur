@@ -58,12 +58,6 @@
                                 <input type="text" class="legend_round_name" value="Round 1">
                                 <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
                                 <div>
-                                    <select class="round_grid_snap">
-                                        <option value="Initial" selected="selected">Initial</option>
-                                        <option value="Elimination">Elimination</option>
-                                        <option value="Same as previous">Same as previous</option>
-                                        <option value="Free">Free</option>
-                                    </select>
                                     <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
                                     <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
                                     <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match">
@@ -75,12 +69,6 @@
                                 <input type="text" class="legend_round_name" value="Round 2">
                                 <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
                                 <div>
-                                    <select class="round_grid_snap">
-                                        <option value="Initial">Initial</option>
-                                        <option value="Elimination">Elimination</option>
-                                        <option value="Same as previous">Same as previous</option>
-                                        <option value="Free" selected="selected">Free</option>
-                                    </select>
                                     <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
                                     <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
                                     <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match">
@@ -489,6 +477,13 @@
                             min="2018-06-07T00:00" max="2018-06-14T00:00"/>
                         </div>
                     </div>
+                    <h3>Snapping mode:</h3>
+                    <select class="round_grid_snap" id="round_edit_widget_snapping">
+                        <option value="Initial">Initial</option>
+                        <option value="Elimination">Elimination</option>
+                        <option value="Same as previous">Same as previous</option>
+                        <option value="Free" selected="selected">Free</option>
+                    </select>
                     <p id="round_edit_widget_disclaimer">Changing these settings will affect all the matches in this round, including the already set up ones!</p>
                 </div>
             </div>

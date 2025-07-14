@@ -51,6 +51,7 @@ class RoundWidget extends Widget{
         this._round = undefined;
         this._previouslySelectedFormat = undefined;
         this._previouslySetTime = undefined;
+        this._previouslySelectedSnap = undefined;
         Widget.limitDateInput(this._widget.querySelector("#round_edit_widget_start_time"));
     }
 
@@ -69,7 +70,9 @@ class RoundWidget extends Widget{
         if(settings.startTime !== "ASAP"){
             selectedStartTimeInput = this._widget.querySelector(`input[name='round_start_type'][value="custom"]`);
         }
-        
+        const snappingSelect = this._widget.querySelector('#round_edit_widget_snapping');
+        snappingSelect.value = settings.snappingMode;
+
         [selectedFormatInput, oldFormatInput, selectedStartTimeInput, oldStartTimeInput].forEach((element) => element.parentElement.style.transition = 'none' );
         selectedFormatInput.checked = true;
         selectedStartTimeInput.checked = true;
@@ -83,6 +86,7 @@ class RoundWidget extends Widget{
         Also handled in this.updateSettings()*/
         this._previouslySelectedFormat = selectedFormatInput.value;
         this._previouslySetTime = selectedStartTimeInput.value;
+        this._previouslySelectedSnap = snappingSelect.value;
         if(this._previouslySetTime === "custom"){
             this._widget.querySelector("#round_edit_widget_start_time").value = settings.startTime;
             this._previouslySetTime = settings.startTime;
@@ -104,6 +108,7 @@ class RoundWidget extends Widget{
         console.log("updating round settings from widget");
         let round_format = this._widget.querySelector('input[name="round_format"]:checked').value;
         let start_format = this._widget.querySelector('input[name="round_start_type"]:checked').value;
+        let snap_mode = this._widget.querySelector('#round_edit_widget_snapping').value;
         const section_name = this._widget.querySelector("#round_edit_section_id").textContent;
         if(start_format === "custom")
             start_format = this._widget.querySelector("#round_edit_widget_start_time").value;
@@ -112,8 +117,12 @@ class RoundWidget extends Widget{
             start_format = undefined;
         if(round_format === this._previouslySelectedFormat)
             round_format = undefined;
-        if(start_format || round_format){
-            this._round.getSettings().setSettings(undefined, start_format, round_format, true, section_name + "_" + this._round.getIndex());
+        if(snap_mode === this._previouslySelectedSnap)
+            snap_mode = undefined;
+        if(start_format || round_format || snap_mode){
+            this._round.getSettings().setSettings(undefined, start_format, round_format, true, section_name + "_" + this._round.getIndex(), snap_mode);
+            if(snap_mode)
+                this._round.getSection().updateSnapping(this._round.getIndex());
             this._round.updateLegend();
         }
     }

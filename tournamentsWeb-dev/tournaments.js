@@ -7,7 +7,7 @@ import { getMatchPosition, setMatchPosition } from "./match.js";
 import { historyStack, forwardStack, undo, pushHistoryObject, discardHistory, latestHistoryChange } from "./history.js";
 import { Match } from "./match.js";
 import { Round } from "./round.js";
-import { Section, snapModeChange } from "./section.js";
+import { Section } from "./section.js";
 
 
 export let matchesPositions = new Map();
@@ -149,15 +149,9 @@ function initializeMatchesPositions(){
         for(const [indexRound, round] of rounds.entries()){
             //tohle je do budoucna lepsi udelat JS only a nemazat se se stavajicim HTML, proste to tam placnout touhle funkci
             const roundName = document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings div:nth-child(${indexRound+1}) .legend_round_name`);
-            if(getColumnSnappingMode(sectionName, indexRound) !== "Free"){
-                matchesPositions.get(sectionName).set(indexRound,new Round(indexRound, round, 200 , roundName.value, getColumnSnappingMode(sectionName, indexRound)));
-            }
-            else{
-                matchesPositions.get(sectionName).set(indexRound,new Round(indexRound, round, 0 , roundName.value, getColumnSnappingMode(sectionName, indexRound)));
-            }
+            matchesPositions.get(sectionName).set(indexRound, new Round(indexRound, round, 0, roundName.value, "Free"));
             
             //roundName.addEventListener("change", roundNameChange);
-            document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings div:nth-child(${indexRound+1}) .round_grid_snap`).addEventListener("change", snapModeChange);             
 
             const matches = round.querySelectorAll(".match");
             let offset = 0;
@@ -177,7 +171,7 @@ function initializeMatchesPositions(){
 
 
 export function getColumnSnappingMode(sectionName, columnIndex){
-    return document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings div[data-round='${(columnIndex+1)}'] .round_grid_snap`).value;
+    return matchesPositions.get(sectionName).get(columnIndex).getSettings().snappingMode;
 }
 
 

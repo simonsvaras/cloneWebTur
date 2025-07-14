@@ -43,8 +43,6 @@ class RoundSettings{
         document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_round_name`).value = this.name;
         document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_start`).textContent = this.startTime;
         document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_format`).textContent = "BO" + this.format;
-        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round="${roundIndex+1}"] .round_grid_snap`).value = this.snappingMode;
-        console.log("IMPORTANT",document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round="${roundIndex+1}"] .round_grid_snap`), document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round="${roundIndex+1}"] .round_grid_snap`).value);
         if(format)
             RoundSettings.resetMatchesFormat(matchesPositions.get(sectionName).get(roundIndex));
         if(startTime)
