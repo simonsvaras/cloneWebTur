@@ -200,10 +200,12 @@ export class Section {
     }
 
     setRoundName(roundIndex, name, history = false){
-        /*this.element.querySelector(`.tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_round_name`).value = name;
-        console.log(this.element.querySelector(`.tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_round_name`));
-        console.log(roundIndex);*/
-        this.get(roundIndex).getSettings().setSettings(name, undefined, undefined, history, this.name+"_"+roundIndex);
+        const round = this.get(roundIndex);
+        if(!round){
+            console.warn(`setRoundName failed: round ${roundIndex} does not exist`);
+            return;
+        }
+        round.getSettings().setSettings(name, undefined, undefined, history, this.name+"_"+roundIndex);
     }
 
     openContextMenu(event){
@@ -291,34 +293,19 @@ export class Section {
         const rounds = legendGrid.querySelectorAll('.round_setting');
 
         rounds.forEach((round, index) => {
-            if(index > 0){
-                const col = document.createElement('div');
-                col.classList.add('insert_round_column');
-                const btn = document.createElement('div');
-                btn.classList.add('insert_round_button');
-                btn.textContent = '+';
-                btn.dataset.index = index;
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    this.createNewRound(e, true, parseInt(btn.dataset.index));
-                });
-                col.appendChild(btn);
-                round.insertAdjacentElement('beforebegin', col);
-            }
+            const col = document.createElement('div');
+            col.classList.add('insert_round_column');
+            const btn = document.createElement('div');
+            btn.classList.add('insert_round_button');
+            btn.textContent = '+';
+            btn.dataset.index = index + 1;
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.createNewRound(e, true, parseInt(btn.dataset.index));
+            });
+            col.appendChild(btn);
+            round.insertAdjacentElement('afterend', col);
         });
-
-        const endCol = document.createElement('div');
-        endCol.classList.add('insert_round_column');
-        const endBtn = document.createElement('div');
-        endBtn.classList.add('insert_round_button');
-        endBtn.textContent = '+';
-        endBtn.dataset.index = rounds.length;
-        endBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            this.createNewRound(e, true, parseInt(endBtn.dataset.index));
-        });
-        endCol.appendChild(endBtn);
-        legendGrid.appendChild(endCol);
     }
 
 
