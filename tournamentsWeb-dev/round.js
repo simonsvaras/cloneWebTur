@@ -40,9 +40,9 @@ class RoundSettings{
         this.snappingMode = snappingMode === undefined ? this.snappingMode : snappingMode;
         this.snappingOffset = snappingOffset === undefined ? this.snappingOffset : snappingOffset;        
 
-        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_round_name`).value = this.name;
-        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_start`).textContent = this.startTime;
-        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_format`).textContent = "BO" + this.format;
+        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting:nth-of-type(${roundIndex+1}) .legend_round_name`).value = this.name;
+        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting:nth-of-type(${roundIndex+1}) .legend_start`).textContent = this.startTime;
+        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting:nth-of-type(${roundIndex+1}) .legend_format`).textContent = "BO" + this.format;
         if(format)
             RoundSettings.resetMatchesFormat(matchesPositions.get(sectionName).get(roundIndex));
         if(startTime)

@@ -116,8 +116,8 @@ export class Section {
                 this.set(i+1, this.get(i));
                 this.get(i+1).element.dataset.round = i+2;
                 matchesPositions.get(this.name).get(i+1).recalculateMatches();//recalculate its connectors
-                this.element.querySelector(`.tournament_legend .rounds_settings > div:nth-of-type(${i+1})`).dataset.round = i+2;
-                console.log(this.element.querySelector(`.tournament_legend .rounds_settings > div:nth-of-type(${i})`));
+                this.element.querySelector(`.tournament_legend .rounds_settings > .round_setting:nth-of-type(${i+1})`).dataset.round = i+2;
+                console.log(this.element.querySelector(`.tournament_legend .rounds_settings > .round_setting:nth-of-type(${i})`));
             }
         }
         console.log("FORCE INDEX", forceIndex);

@@ -148,7 +148,7 @@ function initializeMatchesPositions(){
         matchesPositions.set(sectionName, new Section(sectionName, section.parentElement.parentElement, indexSection));
         for(const [indexRound, round] of rounds.entries()){
             //tohle je do budoucna lepsi udelat JS only a nemazat se se stavajicim HTML, proste to tam placnout touhle funkci
-            const roundName = document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings div:nth-child(${indexRound+1}) .legend_round_name`);
+            const roundName = document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round='${indexRound+1}'] .legend_round_name`);
             matchesPositions.get(sectionName).set(indexRound, new Round(indexRound, round, 0, roundName.value, "Free"));
             
             //roundName.addEventListener("change", roundNameChange);
