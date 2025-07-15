@@ -116,8 +116,11 @@ export class Section {
                 this.set(i+1, this.get(i));
                 this.get(i+1).element.dataset.round = i+2;
                 matchesPositions.get(this.name).get(i+1).recalculateMatches();//recalculate its connectors
-                this.element.querySelector(`.tournament_legend .rounds_settings > .round_setting:nth-of-type(${i+1})`).dataset.round = i+2;
-                console.log(this.element.querySelector(`.tournament_legend .rounds_settings > .round_setting:nth-of-type(${i})`));
+                const legendItem = this.element.querySelector(`.tournament_legend .rounds_settings .round_setting[data-round='${i+1}']`);
+                if(legendItem){
+                    legendItem.dataset.round = i+2;
+                }
+                console.log(legendItem);
             }
         }
         console.log("FORCE INDEX", forceIndex);
