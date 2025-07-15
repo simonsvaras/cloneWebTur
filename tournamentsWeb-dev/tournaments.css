@@ -255,6 +255,7 @@ body.space .viewport{
     display: flex;
     justify-content: center;
     align-items: center;
+    margin: 0 -30px; /* overlay without shifting neighbouring columns */
 }
 
 .insert_round_button {
