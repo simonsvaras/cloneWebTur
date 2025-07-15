@@ -281,9 +281,13 @@ export class Section {
 
     updateInsertButtons(){
         const matchesGrid = this.element.querySelector(".viewport .matches");
+        const legendGrid = this.element.querySelector(".tournament_legend .rounds_settings");
+
         matchesGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
+        legendGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
 
         const rounds = matchesGrid.querySelectorAll('.round_column');
+
         rounds.forEach((round, index) => {
             if(index < rounds.length - 1){
                 const col = document.createElement('div');
@@ -297,7 +301,11 @@ export class Section {
                     this.createNewRound(e, true, parseInt(btn.dataset.index));
                 });
                 col.appendChild(btn);
-                round.insertAdjacentElement('afterend', col);
+
+                const legendRound = legendGrid.querySelector(`.round_setting[data-round='${index+1}']`);
+                if(legendRound){
+                    legendRound.insertAdjacentElement('afterend', col);
+                }
             }
         });
     }
