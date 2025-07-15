@@ -205,6 +205,7 @@ body.space .viewport{
 }
 
 .round_column{
+    z-index: 1;
     width: 450px;
     height: 100%;
     position: relative;
@@ -251,6 +252,7 @@ body.space .viewport{
 }
 
 .insert_round_column {
+    z-index: 2;
     width: 60px;
     display: flex;
     justify-content: center;
