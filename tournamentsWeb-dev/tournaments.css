@@ -261,7 +261,7 @@ body.space .viewport{
 }
 
 .rounds_settings .insert_round_column {
-    margin: 0;
+    margin: 0 -30px; /* overlay without shifting neighbouring columns */
 }
 
 .insert_round_button {
