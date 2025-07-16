@@ -46,12 +46,14 @@ export class Connector{
             if(this.line === undefined && line){
                 line.addEventListener("click", function(event){this.select(event)}.bind(this));
                 line.addEventListener("contextmenu", function(event){this.openContextMenu(event)}.bind(this));
+                line.addEventListener("dblclick", function(event){this.promptExternal(event)}.bind(this));
             }
             this.line = line;
         }
         else{
             if(this.linePart2 === undefined && line){
                 line.addEventListener("click", function(event){this.select(event)}.bind(this)); //TODO asi upravit a pridat parametr
+                line.addEventListener("dblclick", function(event){this.promptExternal(event)}.bind(this));
                 line.addEventListener("contextmenu", function(event){this.openContextMenu(event)}.bind(this));
             }
             this.linePart2 = line;
@@ -82,6 +84,23 @@ export class Connector{
 
         }
         console.log("set external to ", this.external, this);
+    }
+    promptExternal(){
+        if(this.external)
+            return;
+        if(confirm("Convert connector to external?")){
+            this.setExternal(true);
+            if(!this.linePart2 && this.right){
+                const svg = document.createElementNS("http://www.w3.org/2000/svg","svg");
+                const line = document.createElementNS("http://www.w3.org/2000/svg","path");
+                line.id = this.generatedId + "_part2";
+                svg.appendChild(line);
+                const rightMatchPositions = this.right.getPosition();
+                document.querySelector(`.tournament_subdivision[data-sectionName='${rightMatchPositions.sectionName}'] .connectorGrid`).appendChild(svg);
+                this.setLine(line, true);
+            }
+            this.recalculate(false, this.isRelegation());
+        }
     }
 
     refreshLineListeners(){
