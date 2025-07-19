@@ -204,6 +204,7 @@ function initializeMatchesPositions(){
             matchesPositions.get(sectionName).get(indexRound).updateMatchCounter();
             adjustSectionCanvasHeight(sectionName, offset);
         }
+        matchesPositions.get(sectionName).updateInsertButtons();
     }
 }
 
