@@ -1,0 +1,9 @@
+{
+    "username": "svarasim",
+    "message": "Uncaught TypeError: Cannot read properties of null (reading 'value')",
+    "source": "http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/tournaments.js",
+    "line": 152,
+    "column": 105,
+    "stack": "TypeError: Cannot read properties of null (reading 'value')\n    at initializeMatchesPositions (http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/tournaments.js:152:105)\n    at http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/tournaments.js:285:1",
+    "userAgent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/138.0.0.0 Safari\/537.36"
+}

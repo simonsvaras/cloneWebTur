@@ -1,0 +1,9 @@
+{
+    "username": "simon",
+    "message": "Uncaught TypeError: Cannot read properties of null (reading 'parentElement')",
+    "source": "http:\/\/localhost:63343\/tournamentsWeb-dev\/tournamentsWeb-dev\/round.js",
+    "line": 113,
+    "column": 43,
+    "stack": "TypeError: Cannot read properties of null (reading 'parentElement')\n    at Round.getSectionName (http:\/\/localhost:63343\/tournamentsWeb-dev\/tournamentsWeb-dev\/round.js:113:43)\n    at Round.delete (http:\/\/localhost:63343\/tournamentsWeb-dev\/tournamentsWeb-dev\/round.js:155:34)\n    at Round.<anonymous> (http:\/\/localhost:63343\/tournamentsWeb-dev\/tournamentsWeb-dev\/round.js:75:175)",
+    "userAgent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/138.0.0.0 Safari\/537.36"
+}

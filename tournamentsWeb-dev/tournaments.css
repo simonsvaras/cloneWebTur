@@ -111,6 +111,12 @@ body.space {
     display: block;
 }
 
+.round_interaction{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
+
 .viewport::-webkit-scrollbar {
     width: 8px;
     height: 8px;

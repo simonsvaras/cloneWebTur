@@ -170,11 +170,15 @@ export class Section {
                 <div class="round_setting_content">
                     <input type="text" class="legend_round_name" value="Round ${newRoundNumber}">
                     <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
-                    <div>
-                        <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round" title="Delete round">
-                        <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings" title="Round settings">
-                        <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match" title="Add match">
-                        <span class="round_match_counter">0</span>
+                    <div class="round_interaction">
+                        <div>
+                            <span class="round_match_counter">0</span>
+                            <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match" title="Add match">
+                        </div> 
+                        <div> 
+                            <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round" title="Delete round">
+                            <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings" title="Round settings">
+                        </div>
                     </div>
                 </div>
             </div>`);
