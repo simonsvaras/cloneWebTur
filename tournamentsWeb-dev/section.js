@@ -172,6 +172,7 @@ export class Section {
         legendNode.querySelector('.legend_round_name').value = `Round ${newRoundNumber}`;
         legendPlacement.insertAdjacentElement(legendPosition, legendNode);
 
+
         const roundElement = roundHTML(newRoundNumber);
         roundPlacement.insertAdjacentElement(roundPosition, roundElement);
 

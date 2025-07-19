@@ -1,9 +1,0 @@
-{
-    "username": "svarasim",
-    "message": "Uncaught TypeError: Cannot read properties of undefined (reading 'getSettings')",
-    "source": "http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/section.js",
-    "line": 204,
-    "column": 29,
-    "stack": "TypeError: Cannot read properties of undefined (reading 'getSettings')\n    at Section.setRoundName (http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/section.js:204:29)\n    at Section.createNewRound (http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/section.js:185:22)\n    at HTMLDivElement.<anonymous> (http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/section.js:301:26)",
-    "userAgent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/138.0.0.0 Safari\/537.36"
-}

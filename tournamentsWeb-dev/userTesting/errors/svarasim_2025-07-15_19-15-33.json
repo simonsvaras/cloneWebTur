@@ -1,9 +1,0 @@
-{
-    "username": "svarasim",
-    "message": "Uncaught TypeError: Cannot read properties of null (reading 'insertAdjacentHTML')",
-    "source": "http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/section.js",
-    "line": 154,
-    "column": 25,
-    "stack": "TypeError: Cannot read properties of null (reading 'insertAdjacentHTML')\n    at Section.createNewRound (http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/section.js:154:25)\n    at Section.<anonymous> (http:\/\/localhost:63342\/tournamentsWeb-dev\/tournamentsWeb-dev\/section.js:28:124)",
-    "userAgent": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/138.0.0.0 Safari\/537.36"
-}
