@@ -222,14 +222,18 @@ export class Round {
     }
 
     promptDelete(){
-        const modal = document.getElementById("delete_round_modal");
-        const confirmBtn = modal.querySelector("#delete_round_confirm");
-        const cancelBtn = modal.querySelector("#delete_round_cancel");
-        modal.classList.add("show");
+        const widget = document.getElementById("delete_round_widget");
+        const confirmBtn = widget.querySelector("#delete_round_confirm");
+        const cancelBtn = widget.querySelector("#delete_round_cancel");
+        const closeBtn = widget.querySelector("#delete_round_close");
+        const blocker = widget.querySelector(".widget_blocker");
+        widget.classList.add("showing");
         const cleanup = () => {
-            modal.classList.remove("show");
+            widget.classList.remove("showing");
             confirmBtn.removeEventListener("click", onConfirm);
             cancelBtn.removeEventListener("click", onCancel);
+            closeBtn.removeEventListener("click", onCancel);
+            blocker.removeEventListener("click", onCancel);
         };
         const onConfirm = () => {
             cleanup();
@@ -239,6 +243,8 @@ export class Round {
 
         confirmBtn.addEventListener("click", onConfirm);
         cancelBtn.addEventListener("click", onCancel);
+        closeBtn.addEventListener("click", onCancel);
+        blocker.addEventListener("click", onCancel);
     }
 
     updateLegend(){
