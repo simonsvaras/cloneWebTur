@@ -71,7 +71,7 @@ export class Round {
         this._collisionLines = [];
         this._biggestMatchOffset = 0;
         this.counterElement = HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_match_counter`);
-        HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_delete_button`).addEventListener("click", function(){this.delete(true)}.bind(this));
+        HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_delete_button`).addEventListener("click", () => this.promptDelete());
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_settings_button`).addEventListener("click", function(){this.openSettingsWidget(true)}.bind(this));
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .round_add_match_button`).addEventListener("click", () => addMatchToRound(this.getSectionName(), this.getIndex()));
         HTML.closest(".tournament_subdivision").querySelector(`.round_setting[data-round="${index+1}"] .legend_round_name`).addEventListener("change", function(event){
@@ -219,6 +219,32 @@ export class Round {
 
     openSettingsWidget(){
         global.roundWidget.open(this);
+    }
+
+    promptDelete(){
+        const widget = document.getElementById("delete_round_widget");
+        const confirmBtn = widget.querySelector("#delete_round_confirm");
+        const cancelBtn = widget.querySelector("#delete_round_cancel");
+        const closeBtn = widget.querySelector("#delete_round_close");
+        const blocker = widget.querySelector(".widget_blocker");
+        widget.classList.add("showing");
+        const cleanup = () => {
+            widget.classList.remove("showing");
+            confirmBtn.removeEventListener("click", onConfirm);
+            cancelBtn.removeEventListener("click", onCancel);
+            closeBtn.removeEventListener("click", onCancel);
+            blocker.removeEventListener("click", onCancel);
+        };
+        const onConfirm = () => {
+            cleanup();
+            this.delete(true);
+        };
+        const onCancel = () => cleanup();
+
+        confirmBtn.addEventListener("click", onConfirm);
+        cancelBtn.addEventListener("click", onCancel);
+        closeBtn.addEventListener("click", onCancel);
+        blocker.addEventListener("click", onCancel);
     }
 
     updateLegend(){

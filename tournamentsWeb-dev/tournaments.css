@@ -1298,3 +1298,24 @@ GENERAL WIDGET
       opacity: 0;
     }
 }
+
+.confirm_buttons {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.confirm_buttons button {
+    background-color: #007bff;
+    color: #e0e0e0;
+    border: none;
+    border-radius: 4px;
+    padding: 5px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.confirm_buttons button:hover {
+    background-color: #0056b3;
+}
