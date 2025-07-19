@@ -12,13 +12,13 @@ let lastMatchIdNumber = 1;
 
 class LeftConnectorManager {
     constructor() {
-      this.upper = undefined;
-      this.lower = undefined;
+        this.upper = undefined;
+        this.lower = undefined;
     }
-  
+
     // Implement Map-like interface
     set(position, connector) {
-        
+
         if(connector && position === "upper"){
             this.upper = connector;
         }
@@ -27,7 +27,7 @@ class LeftConnectorManager {
         }
         console.log("LeftConnectorManager set", connector, position, connector.isLeftUpper(), connector.isLeftLower());
     }
-  
+
     get(key) { //key is the connector's id
         console.log(this);
         if(this.upper && this.upper.generatedId === key)
@@ -36,20 +36,20 @@ class LeftConnectorManager {
             return this.lower;
         return undefined;
     }
-  
+
     has(key) {
-      return !!this.get(key);
+        return !!this.get(key);
     }
-  
+
     delete(key) {
         if(this.upper && this.upper.generatedId === key)
             this.upper = undefined;
         else if(this.lower && this.lower.generatedId === key)
             this.lower = undefined;
     }
-  
+
     get size() {
-      return (this.upper ? 1 : 0) + (this.lower ? 1 : 0);
+        return (this.upper ? 1 : 0) + (this.lower ? 1 : 0);
     }
 
     // Implement iterable protocol
@@ -57,22 +57,22 @@ class LeftConnectorManager {
         if (this.upper) yield ['upper', this.upper];
         if (this.lower) yield ['lower', this.lower];
     }
-  
+
     // Optional: Implement iteration
     *entries() {
         yield* this[Symbol.iterator]();
     }
-  
+
     *values() {
-      if (this.upper) yield this.upper;
-      if (this.lower) yield this.lower;
+        if (this.upper) yield this.upper;
+        if (this.lower) yield this.lower;
     }
 
     *keys() {
         if (this.upper) yield 'upper';
         if (this.lower) yield 'lower';
     }
-  }
+}
 
 class MatchSettings{
     constructor(matchReference, startTime = undefined, format = undefined){
@@ -185,6 +185,7 @@ export class Match {
         element.addEventListener("mouseleave", function(event){this.clearSnapping(event)}.bind(this));
         element.addEventListener("mousedown", dragMatch);
         element.addEventListener("contextmenu", function(event){this.openContextMenu(event, true)}.bind(this));
+        element.addEventListener("dblclick", function(){this.showMatchDetailsWidget()}.bind(this))
     }
 
     get leftConnectors() {
@@ -197,7 +198,7 @@ export class Match {
             event.stopPropagation();
             if(this.matchElement.parentElement.classList.contains("selecting_not_allowed") || this.matchElement.classList.contains("selecting_not_allowed"))
                 return;
-            
+
             console.log(global.advacingMatch);
             this.selectAsAdvancing(event);
         }
@@ -213,7 +214,7 @@ export class Match {
     getPosition(){
         return getMatchPosition(this.matchElement);
     }
-    
+
     getLeftConnectingDotElement(position){
         return this.matchElement.querySelector(`span.left_connecting_dot.${position}`);
     }
@@ -245,7 +246,7 @@ export class Match {
     select(event){
         if(event)//can be called programatically from context menu
             event.stopPropagation();
-        
+
         if(this.matchElement.classList.contains("match_selected") || global.advacingMatch !== undefined){
             return;
         }
@@ -274,7 +275,7 @@ export class Match {
     leftDotDrag(event, position){
         event.stopPropagation();
         if(event.buttons !== 1)//1 means left click
-           return; 
+            return;
         console.log("left dot drag", global.selectedConnector, event);
 
         if(global.selectedConnector && global.selectedConnector.right === this){ //tohle je zase mozna spatne??
@@ -299,7 +300,7 @@ export class Match {
             this.leftConnectors.get(generatedId).setRightMatch(undefined);
             this.leftConnectors.delete(generatedId);
 
-            
+
 
             latestHistoryChange.type = "change_connector_left";
             latestHistoryChange.old = this.getHistoryName();
@@ -325,9 +326,9 @@ export class Match {
     rightDotDrag(event, relegationConnector = false){
         event.stopPropagation();
         if(event.buttons !== 1)//1 means left click
-           return; 
+            return;
         console.log("right dot drag", relegationConnector, global.selectedConnector && global.selectedConnector.left === this);
-        
+
         if(global.selectedConnector && global.selectedConnector.left === this){ //tohle je mozna spatne?
             if(global.selectedConnector.external)
                 return;
@@ -341,14 +342,14 @@ export class Match {
             //dragActiveMatchesGrid = matchesPositions.get(this.getPosition().sectionName).getGrid();
             modifyLine(global.selectedConnector.generatedId, startCoords.x, startCoords.y, endCoords.x, endCoords.y);
             const tmpConnector = new Connector(global.selectedConnector.line, undefined, global.selectedConnector.right, false, "tmpConnector");
-            
+
 
             tmpConnector.toggleEvents(false);
             const generatedId = global.selectedConnector.generatedId;
             global.selectedConnector.deselect();
 
             //this.rightConnector.setLeftMatch(undefined);
-            
+
 
             latestHistoryChange.type = "change_connector_right";
             latestHistoryChange.old = connector.getHistoryName();
@@ -357,7 +358,7 @@ export class Match {
 
             //console.log(global.selectedConnector.right.leftConnectors.upper);
             const position = connector.leftPositionString();
-            
+
             connector.right.removeTeamByConnector(connector);
             connector.right.leftConnectors.delete(generatedId);
 
@@ -405,11 +406,11 @@ export class Match {
                     return;
                 }
             }
-            
+
         }
         else if(draggedConnector.direction === "left"){
             console.log(draggedConnector.match === this.rightConnector.right, this.rightConnector.right);
-            
+
             if(draggedConnector.match === this.rightConnector.right && draggedConnector.snapped){ //Zde musime zavest integritni omezeni ze winner a loser nemohou jit do stejneho zapasu, jinak se to rozbije!!
                 console.log("should clear snapping on the right connector", draggedConnector);
                 draggedConnector.connector.right.removeTeamByConnector(this.rightConnector);
@@ -432,7 +433,7 @@ export class Match {
                 lineCopy.id = "tmpConnector";
                 console.log(lineCopy);
                 const position = draggedConnector.connector.leftPositionString();
-                draggedConnector.connector = new Connector(lineCopy, undefined, draggedConnector.match, false, "tmpConnector");                
+                draggedConnector.connector = new Connector(lineCopy, undefined, draggedConnector.match, false, "tmpConnector");
                 //this.rightRelegationConnector.right.leftConnectors.delete(this.rightRelegationConnector.generatedId);
                 this.rightRelegationConnector.right.leftConnectors.set(position , draggedConnector.connector);
                 this.rightRelegationConnector.reset();
@@ -460,7 +461,7 @@ export class Match {
         for(let [id, lc] of this.leftConnectors){
             lc.delete(history, overrideRoundIndex);
         }
-        
+
         matchesPositions.get(positions.sectionName).get(positions.roundIndex).removeMatch(positions.matchOffset);
         this.matchElement.remove();
 
@@ -542,13 +543,15 @@ export class Match {
     }
 
     enableRelegation(history = false){
+        let multipleSteps = false; //for linking toggling the relegation and connecting the relegation connector in one undo action
         if(this.rightRelegationConnector){//relegation already enabled
             const relegationConnectorDot = this.matchElement.querySelector(".relegation_connecting_dot");
-            this.rightRelegationConnector.delete();
+            this.rightRelegationConnector.delete(history);
             this.rightRelegationConnector = undefined;
             relegationConnectorDot.remove();
             this.matchElement.querySelectorAll(".right_connecting_dot")[0].style.top = null;
             this.recalculateRightConnectors();
+            multipleSteps = true;
         }
         else{
             this.rightRelegationConnector = new Connector(undefined, this, undefined);
@@ -562,6 +565,7 @@ export class Match {
             this.recalculateRightConnectors();
         }
         if(history){
+            if(multipleSteps) latestHistoryChange.steps = 1; // one aditional step
             latestHistoryChange.type = "toggle_relegation";
             latestHistoryChange.target = this.getHistoryName();;
             pushHistoryObject();
@@ -597,7 +601,7 @@ export class Match {
             //console.log("calculated local connector coords", x, y);
             return {x: x, y:y}
         }
-        
+
     }
 
     showMatchDetailsWidget(){
@@ -692,7 +696,7 @@ export class Match {
             document.getElementById(global.advacingMatch.from.rightRelegationConnector.generatedId + "_part2").parentElement.remove(); //remove it so we can generate new part2 in recalculate fcn
         const connector = (global.advacingMatch.promotion === true)? global.advacingMatch.from.rightConnector: global.advacingMatch.from.rightRelegationConnector;
         console.log(connector);
-        
+
         latestHistoryChange.source = connector.getHistoryName();
         latestHistoryChange.target = this.getHistoryName();
         latestHistoryChange.position = upperLower;
@@ -729,6 +733,7 @@ export class Match {
             global.advacingMatch.from.getRightRelegationConnectingDotElement().style.display = "block";
         connector.right.getLeftConnectingDotElement(connector.leftPositionString()).style.display = "block";
         pushHistoryObject();
+        global.advacingMatch = undefined;
         cancelSelectAdvancing();
     }
 

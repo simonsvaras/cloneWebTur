@@ -30,7 +30,7 @@ class Widget{
     isOpened(){
         return this._opened;
     }
-    
+
     updateSettings(){
         throw new Error("Not implemented");
     }
@@ -80,7 +80,7 @@ class RoundWidget extends Widget{
             [selectedFormatInput, oldFormatInput, selectedStartTimeInput, oldStartTimeInput].forEach((element) => element.parentElement.style.transition = '' );
         }, 1); //idk why this has to be delayed, probably some rendering optimalizations mess this up
 
-        /*this section stores preselected values so the widget doesnt update when not desired to 
+        /*this section stores preselected values so the widget doesnt update when not desired to
         (Set BO1 to BO3 and back to BO1 does not update the widget, otherwise it would set formats of all matches in the round
         to undefined, which is no intuitive).
         Also handled in this.updateSettings()*/
@@ -97,12 +97,12 @@ class RoundWidget extends Widget{
         let startTimeInput = this._widget.querySelector("#round_edit_widget_start_time");
         if(!startTimeInput.reportValidity()){
             return;
-        }  
+        }
 
         this.updateSettings();
         super.close();
     }
-    
+
     updateSettings(){
         //TODO: Rozdelit na format a cas, aby zmena formatu neprepsala zasy u jednotlivych zapasu!
         console.log("updating round settings from widget");
@@ -197,12 +197,12 @@ class MatchWidget extends Widget{
         }
     }
 
-        open(match){
+    open(match){
         super.open();
-            // vždy na začátku nahoře
-            this._scrollContainer.scrollTop = 0;
-            // a znovu na next tick, aby proběhly layouty
-            requestAnimationFrame(() => this._refreshArrowVisibility());
+        // vždy na začátku nahoře
+        this._scrollContainer.scrollTop = 0;
+        // a znovu na next tick, aby proběhly layouty
+        requestAnimationFrame(() => this._refreshArrowVisibility());
         this._match = match;
         const settings = match.getSettings();
         const position = this.match.getPosition();

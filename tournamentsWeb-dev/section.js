@@ -7,19 +7,20 @@ import { getColumnSnappingMode, adjustSectionCanvasHeight, updateSectionsList, u
 import { global } from "./global.js";
 
 class SectionSettings{
-    constructor(order = null){
+    constructor(order, viewportHeight){
         this.order = order;
+        this.viewportHeight = viewportHeight;
         //TODO: sectionname delegovat sem, nebude to uz key v mape, ale jen polozka tady. Pak kdyz zmenime jmeno mapy, tak nemusime celou mapu reindexovat.
     }
 }
 
 export class Section {
-    constructor(sectionName, sectionElement, order = null){
+    constructor(sectionName, sectionElement, order = null, viewportHeight = 800){
         this.name = sectionName;
         this.element = sectionElement;
         this.columnsLocked = false;
         this.rounds = new Map();
-        this.settings = new SectionSettings(order);
+        this.settings = new SectionSettings(order, viewportHeight);
 
         console.log(sectionElement);
         sectionElement.querySelector(".section_toolbar .column_lock img").addEventListener("click", function(event){this.changeLockedState(event)}.bind(this));
@@ -29,11 +30,15 @@ export class Section {
         sectionElement.querySelector(".matches").addEventListener("mousemove", processMouseMove);
         sectionElement.querySelector(".viewport").addEventListener("contextmenu", function(event){this.openContextMenu(event, true)}.bind(this));
         sectionElement.querySelector(".viewport").addEventListener("scroll", function(event){this.scrollLegend(event)}.bind(this));
-        sectionElement.querySelector(".section_collapse_icon").addEventListener("click", section_collapse);
-        sectionElement.querySelector(".section_delete_icon").addEventListener("click", section_delete);
-
         this.updateInsertButtons();
-
+        sectionElement.querySelector(".section_collapse_icon").closest(".section_control_icon").addEventListener("click", section_collapse);
+        sectionElement.querySelector(".section_delete_icon").closest(".section_control_icon").addEventListener("click", section_delete);
+        sectionElement.querySelector(".section_resizer").addEventListener('mousedown', function () {
+            global.resizingSection = this;
+            document.body.style.userSelect = 'none';
+            document.body.style.cursor = "n-resize";
+          }.bind(this));
+        this.getViewport().style.height = viewportHeight + "px";
     }
 
     setName(name, history = false){
@@ -70,18 +75,25 @@ export class Section {
 
     async fullscreen_section(e){
         const toolbar = document.getElementById("tournament_toolbar");
+        // Uložíme původní pozici overlay prvku
+        const generalActionToolbar = {element: document.querySelector("#general_actions_toolbar"), parent: document.querySelector("#general_actions_toolbar").parentNode, sibling: document.querySelector("#general_actions_toolbar").nextSibling};
+        const tournamentToolbar = {element: document.querySelector("#tournament_toolbar"), parent: document.querySelector("#tournament_toolbar").parentNode, sibling: document.querySelector("#tournament_toolbar").nextSibling};
         if(!document.fullscreenElement){
             this.element.classList.add("fullscreen");
-            toolbar.classList.add("none");
-            
+            this.element.appendChild(generalActionToolbar.element);
+            this.element.appendChild(tournamentToolbar.element);
+
             let fullScreenExitFn = function() { //gets called by document.exitFullscreen();
                 console.log("FULLSCREEN", document.fullscreenElement);
                 if(!document.fullscreenElement){
                     this.element.classList.remove("fullscreen");
-                    toolbar.classList.remove("none");
                     this.element.removeEventListener("fullscreenchange", fullScreenExitFn);
                     document.querySelectorAll(`.tournament_subdivision`).forEach(x => x.classList.remove("section_minimized"));
                     this.element.querySelector(".section_toolbar .fullscreen img").src = "https://cdn-icons-png.flaticon.com/512/1549/1549457.png";
+                    this.element.scrollIntoView(true);
+                    console.log("FULLSCREEN", "scroll");
+                    generalActionToolbar.parent.insertBefore(generalActionToolbar.element, generalActionToolbar.sibling);
+                    tournamentToolbar.parent.insertBefore(tournamentToolbar.element, tournamentToolbar.sibling);
                 }
             }
             await this.element.requestFullscreen();
@@ -159,14 +171,14 @@ export class Section {
                     <input type="text" class="legend_round_name" value="Round ${newRoundNumber}">
                     <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
                     <div>
-                        <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round">
-                        <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings">
-                        <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match">
+                        <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round" title="Delete round">
+                        <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings" title="Round settings">
+                        <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match" title="Add match">
                         <span class="round_match_counter">0</span>
                     </div>
                 </div>
             </div>`);
-        
+
         const roundElement = roundHTML(newRoundNumber);
         roundPlacement.insertAdjacentElement(roundPosition, roundElement);
 
@@ -213,7 +225,7 @@ export class Section {
 
         console.log("context menu on section");
     }
-    
+
 
     /*Mimick map behaviour and expose the same methods*/
 
@@ -239,6 +251,10 @@ export class Section {
 
     getGrid(){
         return this.element.querySelector(".viewport .grid");
+    }
+
+    getViewport(){
+        return this.element.querySelector(".viewport");
     }
 
     getConnectorGrid(){
@@ -330,7 +346,7 @@ export class Section {
                         [connectorEndY, connectorStartY] = [connectorStartY, connectorEndY];
                     }
                     points.push([connectorStartY, "start", match.rightConnector]);
-                    points.push([connectorEndY, "end", match.rightConnector]);                    
+                    points.push([connectorEndY, "end", match.rightConnector]);
                 }
                 if(match.rightRelegationConnector && match.rightRelegationConnector.right){
                     console.log(match, match.rightRelegationConnector);
@@ -343,7 +359,7 @@ export class Section {
                             [connectorEndY, connectorStartY] = [connectorStartY, connectorEndY];
                         }
                         points.push([connectorStartY, "start", match.rightRelegationConnector]);
-                        points.push([connectorEndY, "end", match.rightRelegationConnector]);                    
+                        points.push([connectorEndY, "end", match.rightRelegationConnector]);
                     }
                 }
             }
@@ -370,7 +386,7 @@ export class Section {
                 if(intersectingConnectors(connector, opened))
                     return true;
             }
-            return false;            
+            return false;
         }
 
         // Check if two connectors intersect, independent of argument order.
@@ -388,15 +404,15 @@ export class Section {
             const BLeft = connectorB.getLeftLocalCoordinates();
             const BRight = connectorB.getRightLocalCoordinates();
             const conditionAB = (Math.min(BLeft.x, BRight.x) <= ALeft.x && ALeft.x <= Math.max(BLeft.x, BRight.x)) &&
-                                ((Math.min(ALeft.y, ARight.y) <= BRight.y && BRight.y <= Math.max(ALeft.y, ARight.y)) ||
-                                (ALeft.x === BLeft.x && (Math.min(BLeft.y, BRight.y) <= ALeft.y && ALeft.y <= Math.max(BLeft.y, BRight.y))) ||
-                                ((connectorB.right.getRound().getIndex()-1 === connectorA.left.getRound().getIndex()) && BLeft.y === ARight.y));
+                ((Math.min(ALeft.y, ARight.y) <= BRight.y && BRight.y <= Math.max(ALeft.y, ARight.y)) ||
+                    (ALeft.x === BLeft.x && (Math.min(BLeft.y, BRight.y) <= ALeft.y && ALeft.y <= Math.max(BLeft.y, BRight.y))) ||
+                    ((connectorB.right.getRound().getIndex()-1 === connectorA.left.getRound().getIndex()) && BLeft.y === ARight.y));
             const conditionBA = (Math.min(ALeft.x, ARight.x) <= BLeft.x && BLeft.x <= Math.max(ALeft.x, ARight.x)) &&
-                                ((Math.min(BLeft.y, BRight.y) <= ARight.y && ARight.y <= Math.max(BLeft.y, BRight.y)) ||
-                                (ALeft.x == BLeft.x && (Math.min(ALeft.y, ARight.y) <= BLeft.y && BLeft.y <= Math.max(ALeft.y, ARight.y))) ||
-                                ((connectorA.right.getRound().getIndex()-1 === connectorB.left.getRound().getIndex()) && ALeft.y === BRight.y));
+                ((Math.min(BLeft.y, BRight.y) <= ARight.y && ARight.y <= Math.max(BLeft.y, BRight.y)) ||
+                    (ALeft.x == BLeft.x && (Math.min(ALeft.y, ARight.y) <= BLeft.y && BLeft.y <= Math.max(ALeft.y, ARight.y))) ||
+                    ((connectorA.right.getRound().getIndex()-1 === connectorB.left.getRound().getIndex()) && ALeft.y === BRight.y));
 
-            console.log("conditionAB", conditionAB, "conditionBA", conditionBA, "A:", connectorA, "B:", connectorB);                                
+            console.log("conditionAB", conditionAB, "conditionBA", conditionBA, "A:", connectorA, "B:", connectorB);
             return conditionAB || conditionBA;
         }
 
@@ -435,10 +451,10 @@ export class Section {
             switch(value){
                 case "Free":
                     this.get(i).getSettings().setSettings(undefined, undefined, undefined, false, this.name+"_"+i, "Free", 0);
-                break;
+                    break;
                 case "Initial":
                     this.get(i).getSettings().setSettings(undefined, undefined, undefined, false, this.name+"_"+i, "Initial", 200);
-                break;
+                    break;
                 case "Elimination":
                     if(i > 0){
                         let fallback = true;
@@ -450,19 +466,19 @@ export class Section {
                             this.get(i).getSettings().setSettings(undefined, undefined, undefined, false, this.name+"_"+i, "Elimination", this.get(y).getSettings().snappingOffset *2);
                             console.log("set snapping offset to", this.get(y).getSettings().snappingOffset*2);
                             fallback = false;
-                            break;                            
+                            break;
                         }
                         if(fallback){
                             console.log("set snapping offset to 200");
                             this.get(i).getSettings().setSettings(undefined, undefined, undefined, false, this.name+"_"+i, "Elimination", 200);
                         }
-                        
+
                     }
                     else{
                         console.log("set snapping offset to 200");
                         this.get(i).getSettings().setSettings(undefined, undefined, undefined, false, this.name+"_"+i, "Elimination", 200);
                     }
-                break;
+                    break;
                 case "Same as previous":
                     if(i > 0){
                         this.get(i).getSettings().setSettings(undefined, undefined, undefined, false, this.name+"_"+i, "Same as previous", this.get(i-1).getSettings().snappingOffset);
@@ -470,11 +486,19 @@ export class Section {
                     else{
                         this.get(i).getSettings().setSettings(undefined, undefined, undefined, false, this.name+"_"+i, "Same as previous", 200);
                     }
-                break;
+                    break;
             }
-        }            
+        }
     }
-    
+
+    getSettings(){
+        return this.settings;
+    }
+
+    saveViewportHeight(){
+        this.getSettings().viewportHeight = this.getViewport().offsetHeight;
+    }
+
 }
 
 function processMouseMove(event){
@@ -485,7 +509,7 @@ function processMouseMove(event){
     else if(draggedConnector.isActive() && !draggedConnector.snapped){
         moveDraggedLine(event);
     }
-        
+
 }
 
 function section_collapse(event){
@@ -504,27 +528,32 @@ function moveDraggedLine(event){
     const rect= matchesPositions.get(draggedConnector.match.getPosition().sectionName).getGrid().getBoundingClientRect();
     console.log(rect, rect.left);
 
-    //console.log(event.pageY, document.documentElement.scrollTop, rect, dragActiveMatchesGrid.parentElement.scrollTop)
-    if(draggedConnector.connector.line.id === "tmpConnector")
-        modifyLine("tmpConnector", draggedConnector.startingPointX, draggedConnector.startingPointY, event.pageX - rect.left, event.pageY - document.documentElement.scrollTop - rect.y);
-    else{
-        modifyLine(draggedConnector.connector.generatedId, draggedConnector.startingPointX, draggedConnector.startingPointY, event.pageX - rect.left, event.pageY - document.documentElement.scrollTop - rect.y);
-    }
     
+    let startX = draggedConnector.startingPointX;
+    let startY = draggedConnector.startingPointY;
+    let endX = (event.pageX  - rect.left) / global.zoomLevel;
+    let endY = (event.pageY - document.documentElement.scrollTop - rect.y) / global.zoomLevel;
+    console.log(startX, startY, endX, endY, global.zoomLevel);
+    if(draggedConnector.connector.line.id === "tmpConnector")
+        modifyLine("tmpConnector", startX, startY, endX, endY);
+    else{
+        modifyLine(draggedConnector.connector.generatedId, startX, startY, endX, endY);
+    }
+
 }
 
 function snapToGridPreview(event){
     if(!global.draggedMatch)
         return;
     let snapY;
-    
+
     //let rect = dragActiveMatchesGrid.getBoundingClientRect();
     const positions = getMatchPosition(global.draggedMatch);
     const rect = matchesPositions.get(positions.sectionName).getGrid();
-    let snapX = matchesPositions.get(positions.sectionName).isLocked() ? positions.roundIndex*CONSTANT.columnSnapPx : (Math.floor((event.pageX + rect.parentElement.scrollLeft)/CONSTANT.columnSnapPx)*CONSTANT.columnSnapPx);
+    let snapX = matchesPositions.get(positions.sectionName).isLocked() ? positions.roundIndex*CONSTANT.columnSnapPx : (Math.floor(((event.pageX + rect.parentElement.scrollLeft)/global.zoomLevel)/CONSTANT.columnSnapPx)*CONSTANT.columnSnapPx);
 
     let columnIndex = Number(snapX/CONSTANT.columnSnapPx);
-    
+
     if(columnIndex >= matchesPositions.get(positions.sectionName).count()){
         console.log("column index set to last");
         columnIndex = matchesPositions.get(positions.sectionName).count() -1;
@@ -538,18 +567,18 @@ function snapToGridPreview(event){
     //let column = rect.querySelector(`.round_column[data-round='${columnIndex+1}']`);
     let column = matchesPositions.get(positions.sectionName).get(columnIndex).element;
     let snappingMode = getColumnSnappingMode(positions.sectionName, columnIndex);
-    
+
     const matchSnapPx = matchesPositions.get(positions.sectionName).get(columnIndex).getSettings().snappingOffset;
-    const relativeMousePos = event.pageY - document.documentElement.scrollTop - rect.getBoundingClientRect().y;
+    const relativeMousePos = (event.pageY - document.documentElement.scrollTop - rect.getBoundingClientRect().y) / global.zoomLevel;
     console.log("SNAPPING", snappingMode, m, columnIndex, positions, matchSnapPx, relativeMousePos);
     snappingMode = matchesPositions.get(positions.sectionName).get(columnIndex).getSettings().snappingMode;
     switch(snappingMode){
         case "Elimination": //fall through
         case "Same as previous": //fall through
         //half the number of the matches - solved with the snappingOffsetProperty
-        case "Initial": 
+        case "Initial":
             snapY = closestNumber(matchSnapPx/2 -global.draggedMatch.offsetHeight/2 -CONSTANT.matchVerticalGap/2, matchSnapPx, relativeMousePos -global.draggedMatch.offsetHeight/2);
-            
+
             if(global.draggedMatch.parentElement.dataset.round != columnIndex+1){
                 console.log("FOREIGN MATCH", columnIndex+1, global.draggedMatch.parentElement.dataset.round, snapY);
                 if(isPositionOccupied(positions.sectionName, columnIndex, snapY)){
@@ -559,8 +588,8 @@ function snapToGridPreview(event){
                 }
 
                 setMatchPosition(global.draggedMatch, columnIndex, snapY);
-                
-                column.appendChild(global.draggedMatch);                        
+
+                column.appendChild(global.draggedMatch);
                 break;
             }
             if(isPositionOccupied(positions.sectionName, columnIndex, snapY)){
@@ -577,7 +606,7 @@ function snapToGridPreview(event){
             snapY = snapY<0? 0 :snapY;
             console.log("Free snapY", snapY, rect.offsetHeight);
             if(isPositionOccupied(positions.sectionName, columnIndex, snapY)){
-                
+
                 //same exact position as other match - map collision -> unexpected behaviour.
                 return;
             }
@@ -591,7 +620,7 @@ function snapToGridPreview(event){
 
     global.draggedMatch.style.top = snapY + "px";
     console.log("snapY calculated to ",snapY);
-    
+
     const newPositions = getMatchPosition(global.draggedMatch);
     const match = matchesPositions.get(newPositions.sectionName).get(newPositions.roundIndex).getMatch(newPositions.matchOffset);
     for(let [id, c] of match.leftConnectors){
@@ -599,10 +628,10 @@ function snapToGridPreview(event){
     }
     match.rightConnector.recalculate();
     if(match.rightRelegationConnector){
-        match.rightRelegationConnector.recalculate(false, true);   
+        match.rightRelegationConnector.recalculate(false, true);
     }
     //if(snapY + global.draggedMatch.offsetHeight >  dragActiveMatchesGrid.getBoundingClientRect().height - CONSTANT.matchesPaddingPx){
-        adjustSectionCanvasHeight(newPositions.sectionName, snapY, true);
+    adjustSectionCanvasHeight(newPositions.sectionName, snapY, true);
     //}
     //global.draggedMatch.style.left = round*roundWidthPx + "px";
 }

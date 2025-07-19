@@ -13,18 +13,7 @@
         <section id="tournament_toolbar">
             <div id="add_matches_containter">
                 Add 
-                <input type="text" list="matches_numbers" id="matches_number" oninput="this.value = this.value.replace(/^0+|[^\d]/g, ''); if(Number(this.value) > 1024){this.value='1024'}">
-                    <datalist id="matches_numbers">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>4</option>
-                        <option>8</option>
-                        <option>16</option>
-                        <option>32</option>
-                        <option>64</option>
-                        <option>128</option>
-                        <option>256</option>
-                    </datalist>
+                <input type="text" id="matches_number" oninput="this.value = this.value.replace(/^0+|[^\d]/g, ''); if(Number(this.value) > 1024){this.value='1024'}">
                 Matches to round
                 <select name="add_match_round" id="add_match_round">
                     <option value="1" selected>1</option>
@@ -138,7 +127,7 @@
                         </div>
                     </div>
                     <div class="add_round_column">
-                        <div class="add_round_button">  
+                        <div class="add_round_button" title="Add round">  
                             +
                         </div>
                     </div>
@@ -149,6 +138,7 @@
                     
                 </section>
             </section>
+            <div class="section_resizer"></div>
 
         </section>
 
@@ -159,10 +149,10 @@
                     <hr>
                     <div class="section_control">
                         <span class="section_control_icon">
-                            <img src="https://cdn-icons-png.flaticon.com/512/7345/7345031.png" class="section_collapse_icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/7345/7345031.png" class="section_collapse_icon" alt="Minimize section" title="Minimize section">
                         </span>
                         <span class="section_control_icon">
-                            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" class="section_delete_icon">
+                            <img src="https://cdn-icons-png.flaticon.com/512/484/484662.png" class="section_delete_icon" alt="Delete section" title="Delete section">
                         </span>
                     </div>
                 </section>
@@ -183,15 +173,15 @@
                     </section>
                     <section class="section_toolbar">
                         <div class="fullscreen">
-                            <img src="https://cdn-icons-png.flaticon.com/512/1549/1549457.png" alt="fullscreen toggle">
+                            <img src="https://cdn-icons-png.flaticon.com/512/1549/1549457.png" alt="Fullscreen toggle" title="Toggle fullscreen">
                         </div>
                         <div class="column_lock">
-                            <img src="https://cdn-icons-png.flaticon.com/512/747/747315.png" alt="column lock toggle">
+                            <img src="https://cdn-icons-png.flaticon.com/512/747/747315.png" alt="Column lock toggle" title="Toggle locking matches to current rounds">
                         </div>
                     </section>
                     <section class="matches">
                         <div class="add_round_column">
-                            <div class="add_round_button">  
+                            <div class="add_round_button" title="Add round">  
                                 +
                             </div>
                         </div>
@@ -200,8 +190,9 @@
                     <section class="connectorGrid">
                         <svg width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"></svg>
                     </section>
+                    
                 </section>
-    
+                <div class="section_resizer"></div>
             </section>
         </template>
         <template id="matchTemplate">
@@ -213,7 +204,7 @@
                 <span class="right_connecting_dot"></span>
             </div>
         </template>
-        <svg width="0%" height="0%" xmlns="http://www.w3.org/2000/svg"> <!--definitions for global use-->
+        <svg width="0%" height="0%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;"> <!--definitions for global use-->
             <defs>
                 <pattern id="firstRow" width="450" height="195" patternUnits="userSpaceOnUse">
                     <path d="M 0 0
@@ -255,8 +246,21 @@
         </svg>
 
     </section>
+
+    <div id="general_actions_toolbar">
+        <div id="general_actions_toolbar_background">
+            <img id="general_action_undo" src="https://cdn-icons-png.flaticon.com/512/3808/3808687.png" title="Undo (Ctrl + Z)">
+            <img id="general_action_redo" src="https://cdn-icons-png.flaticon.com/512/3808/3808699.png" title="Redo (Ctrl + Y)"> 
+            <img id="general_action_zoom_in" src="https://cdn-icons-png.flaticon.com/512/5953/5953491.png" title="Zoom in (Ctrl +)">
+            <img id="general_action_zoom_out" src="https://cdn-icons-png.flaticon.com/512/5953/5953501.png" title="Zoom out (Ctrl -)">
+        </div>
+        <div id="zoom_level_container">
+            <p id="zoom_level_value"></p>
+        </div>
+    </div>
+
     <div id="section_add_popup_container">
-        <div id="section_add_popup">
+        <div id="section_add_popup" title="Add a new section">
             
         </div>
     </div>
@@ -460,10 +464,10 @@
                             <input type="radio" checked="checked" name="round_format" value="1">
                         </label>
                         <label class="container">BO3
-                        <input type="radio" name="round_format" value="3">
+                            <input type="radio" name="round_format" value="3">
                         </label>
                         <label class="container">BO5
-                        <input type="radio" name="round_format" value="5">
+                            <input type="radio" name="round_format" value="5">
                         </label>
                     </div>
                     <h3>Default start mode:</h3>
@@ -477,7 +481,7 @@
                             </label>
                             <p id="edit_time_prompt">Edit time</p>
                             <input type="datetime-local" id="round_edit_widget_start_time" name="meeting-time" value="2018-06-12T19:30"
-                            min="2018-06-07T00:00" max="2018-06-14T00:00"/>
+                                   min="2018-06-07T00:00" max="2018-06-14T00:00"/>
                         </div>
                     </div>
                     <h3>Snapping mode:</h3>
@@ -487,7 +491,7 @@
                         <option value="Same as previous">Same as previous</option>
                         <option value="Free" selected="selected">Free</option>
                     </select>
-
+    
                 </div>
             </div>
         </div>

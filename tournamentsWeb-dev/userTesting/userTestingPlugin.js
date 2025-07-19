@@ -1,8 +1,21 @@
 let userTestingUsername = "UsernameNotSet";
+
+function dateWeekFromNow() {
+    const now = new Date();
+    const oneWeekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000); // 7 days in milliseconds
+    return oneWeekLater.toISOString(); // ISO string like '2025-07-26T12:34:56.789Z'
+}
+
+function hasDatePassed(targetDate) {
+    const now = new Date();
+    const dateToCheck = new Date(targetDate);
+    return dateToCheck < now;
+}
+  
 (function() {
     const MASTER_PASSWORD = "myMasterPass"; // Define master password here
     
-    if (localStorage.getItem("authenticated")) return; // Skip if already authenticated
+    if (localStorage.getItem("authenticated") && !hasDatePassed(localStorage.getItem("authenticated"))) return; // Skip if authentication is nto expired
     
     const modal = document.createElement("div");
     modal.style.position = "fixed";
@@ -47,7 +60,7 @@ let userTestingUsername = "UsernameNotSet";
     
     submitBtn.onclick = function() {
         if (passwordInput.value === MASTER_PASSWORD) {
-            localStorage.setItem("authenticated", "true");
+            localStorage.setItem("authenticated", dateWeekFromNow());
             localStorage.setItem("username", usernameInput.value);
             document.body.removeChild(modal);
         } else {
@@ -128,10 +141,19 @@ let userTestingUsername = "UsernameNotSet";
         });
     };
 
+    changeUsernameFn = function() {
+        let newUsername = prompt("Please enter your new username", localStorage.getItem("username"));
+        if (newUsername == null || newUsername == "") {
+            return;
+        } else {
+            localStorage.setItem("username", newUsername);
+        }
+    }
+
     menu.appendChild(createButton('Save', ()=>{generateJSON(); alert("Saved")}));
     menu.appendChild(createButton('Remove save', () => {localStorage.removeItem("savedPositions"); alert('Save removed')}));
     menu.appendChild(createButton('Send', sendData, "#ffcc00"));
-    menu.appendChild(createButton('Change username', ()=>{localStorage.removeItem("authenticated"); localStorage.removeItem("username"); alert("Your username has been cleared. Once you reload the page you can choose a new one.")}, "rgb(255 53 0)"));
+    menu.appendChild(createButton('Change username', changeUsernameFn, "rgb(228 0 255)"));
 
     document.body.appendChild(menu);
 })();/*Vygenerovano chatGPT */

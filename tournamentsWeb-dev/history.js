@@ -93,20 +93,6 @@ class HistoryStack{
     
         return lastGroup;
     }
-    
-
-    findLastCompleteGroup() {
-        let index = 0;
-        let lastGroup = null;
-    
-        while (index < this.stack.length) {
-            let [endIndex, groupSize] = this.findNextCompleteGroup(index);
-            lastGroup = { start: index, size: groupSize };
-            index = endIndex + 1;
-        }
-    
-        return lastGroup;
-    }
 }
 
 export const historyStack = new HistoryStack();
@@ -133,6 +119,7 @@ export function undo(direction = "backwards", steps = 0){
         return;
 
     let lastState = undefined;
+    console.log("passed");
     if(direction === "backwards"){
         lastState = historyStack.pop();  
         console.log(historyStack, lastState);
@@ -148,7 +135,7 @@ export function undo(direction = "backwards", steps = 0){
             //historyStack.push(tmp);
             lastState = reverseState(tmp); //pozor, klonovanim ztracime reference!!!!
             console.log(forwardStack, lastState);
-            processHistoryState(lastState, direction, steps)
+            processHistoryState(lastState, direction)
         }
     }
     else{
@@ -359,25 +346,6 @@ function processHistoryState(lastState, direction = "backwards", steps = 0){
 
     }
 
-    /*if(direction === "forwards"){
-        historyStack.push(reverseState(lastState));
-        for(let i = forwardStack.length-1; i >= 0; i--){
-            console.log(i, forwardStack.seek(i), forwardStack.seek(i).steps, forwardStack.length);
-            if(forwardStack.seek(i).steps && forwardStack.seek(i).steps + forwardStack.length - i >= forwardStack.length){
-                if(i === 0){
-                    console.log("calling final undo");
-                    undo(direction, 0);
-                    return;
-                }
-                for(let count = 0; count < i; count++){
-                    console.log("calling undo from inner loop");
-                    undo(direction, 0);
-                }
-                return;
-            }
-        }
-        return;
-    }*/
     if(direction === "forwards"){
         historyStack.push(reverseState(lastState));
         return;
@@ -401,20 +369,7 @@ function reverseState(state){
             state.target = tmp;
         }
     }
-    //v zazsobniku se podivame "dozadu" dokud nenajdeme neco s property steps. Pokud vzdalenost posledni polozky v zasobniku
-    //odpovida steps pak vime ze se jedna o jeden krok a potrebujeme ho spojit. Jelikoz mame zasobnik od nejnovejsiho prirustku k nejstarsimu
-    //tak steps presuneme na konec zasobniku a undo se postara o potrebny pocet kroku (tahle funkce bude zavolana x steps)
-    /*if(state.steps){
-        delete state["steps"];
-    }
-    for(let i = 0; i < forwardStack.length; i++){
-        console.log(i, forwardStack.seekFromEnd(i).steps, forwardStack.seekFromEnd(i));
-        if(forwardStack.seekFromEnd(i).steps && forwardStack.seekFromEnd(i).steps + forwardStack.length - i === forwardStack.length){
-            console.log("true");
-            state.steps = forwardStack.seekFromEnd(i).steps;
-            break;
-        }
-    }*/
+
     switch(state.type){
         case "delete_connector": //OK
             state.type = "new_connector_right";
