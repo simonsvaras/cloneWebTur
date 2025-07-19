@@ -178,16 +178,20 @@ function initializeMatchesPositions(){
     if(loadTournamentFromLocalStorage())//!!!EXPERIMENTAL!!!
         return;
     const sections = document.querySelectorAll(".matches");
+    const roundSettingsTemplate = document.getElementById('roundSettingTemplate');
     for(const[indexSection,section] of sections.entries()){
         const rounds = section.querySelectorAll(".round_column");
         const sectionName = section.parentElement.parentElement.querySelector(".section_name").value;
         matchesPositions.set(sectionName, new Section(sectionName, section.parentElement.parentElement, indexSection));
         for(const [indexRound, round] of rounds.entries()){
             //tohle je do budoucna lepsi udelat JS only a nemazat se se stavajicim HTML, proste to tam placnout touhle funkci
-            const roundName = document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round='${indexRound+1}'] .legend_round_name`);
-            matchesPositions.get(sectionName).set(indexRound, new Round(indexRound, round, 0, roundName.value, "Free"));
-
-            //roundName.addEventListener("change", roundNameChange);
+            const roundsContainer = document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings`);
+            const node = roundSettingsTemplate.content.cloneNode(true).firstElementChild;
+            const roundName = `Round ${indexRound+1}`
+            node.dataset.round = indexRound+1;
+            node.querySelector('.legend_round_name').value = roundName;
+            roundsContainer.appendChild(node);
+            matchesPositions.get(sectionName).set(indexRound, new Round(indexRound, round, 0, roundName, "Free"));
 
             const matches = round.querySelectorAll(".match");
             let offset = 0;
