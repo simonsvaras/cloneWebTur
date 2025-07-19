@@ -86,12 +86,19 @@ body.space {
 }
 
 .tournament_legend_content div.round_setting{
+    position: relative;
     width: 450px;
     min-width: 450px;
     display: flex;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-evenly;
+}
 
+.tournament_legend_content div.round_setting .insert_round_column{
+    width: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .tournament_legend_content div.round_setting p{
@@ -277,11 +284,10 @@ body.space .viewport{
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 -30px; /* overlay without shifting neighbouring columns */
 }
 
 .rounds_settings .insert_round_column {
-    margin: 0 -30px; /* overlay without shifting neighbouring columns */
+    margin: 0; /* no negative margin when nested inside round settings */
 }
 
 .insert_round_button {
