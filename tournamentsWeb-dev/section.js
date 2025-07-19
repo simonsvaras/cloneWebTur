@@ -293,32 +293,25 @@ export class Section {
     }
 
     updateInsertButtons(){
-        const matchesGrid = this.element.querySelector(".viewport .matches");
         const legendGrid = this.element.querySelector(".tournament_legend .rounds_settings");
+        const rounds = legendGrid.querySelectorAll('.round_setting');
 
-        matchesGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
-        legendGrid.querySelectorAll('.insert_round_column').forEach(e => e.remove());
-
-        const rounds = matchesGrid.querySelectorAll('.round_column');
-
-        rounds.forEach((round, index) => {
-            if(index < rounds.length - 1){
-                const col = document.createElement('div');
-                col.classList.add('insert_round_column');
-                const btn = document.createElement('div');
-                btn.classList.add('insert_round_button');
-                btn.textContent = '+';
+        rounds.forEach((legendRound, index) => {
+            const col = legendRound.querySelector('.insert_round_column');
+            if(!col) return;
+            const btn = col.querySelector('.insert_round_button');
+            if(btn){
                 btn.dataset.index = index + 1;
-                btn.addEventListener('click', (e) => {
+                btn.onclick = (e) => {
                     e.stopPropagation();
                     this.createNewRound(e, true, parseInt(btn.dataset.index));
-                });
-                col.appendChild(btn);
+                };
+            }
 
-                const legendRound = legendGrid.querySelector(`.round_setting[data-round='${index+1}']`);
-                if(legendRound){
-                    legendRound.insertAdjacentElement('afterend', col);
-                }
+            if(index >= rounds.length - 1){
+                col.style.display = 'none';
+            } else {
+                col.style.display = '';
             }
         });
     }
