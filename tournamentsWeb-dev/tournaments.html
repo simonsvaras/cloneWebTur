@@ -42,38 +42,6 @@
             <section class="tournament_legend">
                 <section class="tournament_legend_content">
                     <section class="rounds_settings">
-                        <div class="round_setting" data-round="1">
-                            <div class="round_setting_content">
-                                <input type="text" class="legend_round_name" value="Round 1">
-                                <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
-                                <div class="round_interaction">
-                                    <div>
-                                        <span class="round_match_counter">0</span>
-                                        <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match" title="Add match">
-                                    </div>
-                                    <div>
-                                        <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round" title="Delete round">
-                                        <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings" title="Round settings">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="round_setting" data-round="2">
-                            <div class="round_setting_content">
-                                <input type="text" class="legend_round_name" value="Round 2">
-                                <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
-                                <div class="round_interaction">
-                                    <div>
-                                        <span class="round_match_counter">0</span>
-                                        <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match" title="Add match">
-                                    </div>
-                                    <div>
-                                        <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round" title="Delete round">
-                                        <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings" title="Round settings">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </section>
                 </section>
             </section>
@@ -210,6 +178,24 @@
                 <span class="left_connecting_dot upper"></span>
                 <span class="left_connecting_dot lower"></span>
                 <span class="right_connecting_dot"></span>
+            </div>
+        </template>
+        <template id="roundSettingTemplate">
+            <div class="round_setting" data-round="1">
+                <div class="round_setting_content">
+                    <input type="text" class="legend_round_name" value="Round 1">
+                    <div><p class="legend_format">BO1</p>, <p class="legend_start">ASAP</p></div>
+                    <div class="round_interaction">
+                        <div>
+                            <span class="round_match_counter">0</span>
+                            <img class="round_action_button round_add_match_button" src="https://cdn-icons-png.flaticon.com/512/992/992651.png" alt="Add match" title="Add match">
+                        </div>
+                        <div>
+                            <img class="round_action_button round_delete_button" src="https://cdn-icons-png.flaticon.com/512/484/484662.png" alt="Delete round" title="Delete round">
+                            <img class="round_action_button round_settings_button" src="https://cdn-icons-png.flaticon.com/512/2040/2040504.png" alt="Round settings" title="Round settings">
+                        </div>
+                    </div>
+                </div>
             </div>
         </template>
         <svg width="0%" height="0%" xmlns="http://www.w3.org/2000/svg" style="position:absolute;"> <!--definitions for global use-->
@@ -507,6 +493,16 @@
 
 
 
+    <script>
+        const roundsContainer = document.querySelector('.tournament_subdivision[data-sectionName="Section1"] .rounds_settings');
+        const template = document.getElementById('roundSettingTemplate');
+        for (let i = 1; i <= 2; i++) {
+            const node = template.content.cloneNode(true).firstElementChild;
+            node.dataset.round = i;
+            node.querySelector('.legend_round_name').value = `Round ${i}`;
+            roundsContainer.appendChild(node);
+        }
+    </script>
     <script type="module" src="tournaments.js"></script>
     <script src="userTesting/userTestingPlugin.js"></script><!--disable if not user testing-->
 </body>
