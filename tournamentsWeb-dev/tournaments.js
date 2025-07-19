@@ -45,7 +45,6 @@ function processMouseUp(event){
         return;
     }
     else if(draggedConnector.isActive()){
-        
         if(!draggedConnector.snapped)
             dropConnector(event);
         else{
@@ -55,9 +54,15 @@ function processMouseUp(event){
             draggedConnector.deactivate()
             if(latestHistoryChange !== null)
                 pushHistoryObject();
-        } 
+        }
         matchesPositions.get(getMatchPosition(draggedConnector.match.matchElement).sectionName).highlightCollisions();
         return;
+    }
+    else if(global.resizingSection){
+        global.resizingSection.saveViewportHeight()
+        global.resizingSection = undefined;
+        document.body.style.removeProperty("userSelect");
+        document.body.style.removeProperty("cursor");
     }
 }
 
@@ -77,19 +82,13 @@ function processClick(event){
     console.log("click");
     if(global.advacingMatch){
         //clicked outside of a match, canceling action
-        if(global.advacingMatch.promotion){
-            global.advacingMatch.from.rightConnector.reset(true);
-        }
-        else if(global.advacingMatch.from.rightRelegationConnector){
-            global.advacingMatch.from.rightRelegationConnector.reset(true);
-        }
-        cancelSelectAdvancing();
+        cancelSelectAdvancing(event);
     }
     //tady je vsechno pres mouse up a down eventy, click zatim nepotrebny
 }
 
 function processKeyPress(event){
-    console.log("keydown", event)
+    //console.log("keydown", event)
     //document.addEventListener('keyup', (event) => {
     if (event.keyCode === 46 && global.selectedMatch){//delete key
         global.selectedMatch.delete(true);
@@ -97,20 +96,54 @@ function processKeyPress(event){
     else if (event.keyCode === 46 && global.selectedConnector){
         global.selectedConnector.delete(true);
     }
-    else if(event.ctrlKey && event.keyCode === 90 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// alt + z
+    else if(event.ctrlKey && event.keyCode === 90 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + z
         event.preventDefault();
         undo("backwards");
-        console.log(event);
     }
-    else if(event.ctrlKey && event.keyCode === 89 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// alt + y
+    else if(event.ctrlKey && event.keyCode === 89 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + y
         event.preventDefault();
         undo("forwards");
-        console.log(event);
     }
-   // });
+    else if(event.ctrlKey && event.keyCode === 107 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + "+"
+        event.preventDefault();
+        zoomIn();
+    }
+    else if(event.ctrlKey && event.keyCode === 109 && !global.roundWidget.isOpened() && !global.matchWidget.isOpened()){// ctrl + "-"
+        event.preventDefault();
+        zoomOut();
+    }
 }
 
+function processMouseMove(event){
+    global.lastMouseX = event.clientX;
+    global.lastMouseY = event.clientY;
+    if (!global.resizingSection) return;
+    const viewport = global.resizingSection.element.querySelector(".viewport")
+    const newHeight = event.clientY - viewport.getBoundingClientRect().top;
+    viewport.style.height = `${newHeight}px`;
+}
 
+function processScroll(event){
+    console.log("scroll", global.resizingSection, global.lastMouseX, global.lastMouseY);
+    if (!global.resizingSection) return;
+        if(!global.lastMouseX || !global.lastMouseY) return;
+        const viewport = global.resizingSection.element.querySelector(".viewport");
+        const newHeight = global.lastMouseY - viewport.getBoundingClientRect().top;
+        viewport.style.height = `${newHeight}px`;
+}
+
+/*this processes mousewheel actions. It is more specific than scroll listener.
+We use it only for detecting ctrl + scroll for zooming the page.
+All scroll related actions should be hooked on scroll listener, not here*/
+function processWheel(event){
+    console.log(event);
+    if(!event.ctrlKey) return;
+    event.preventDefault();
+    const delta = Math.sign(event.deltaY);
+    console.log(delta);
+    if(delta === -1) zoomIn();
+    if(delta === 1) zoomOut();
+}
 
 
 
@@ -136,6 +169,9 @@ window.addEventListener("mouseup", processMouseUp);
 window.addEventListener("mousedown", processMouseDown);
 window.addEventListener("click", processClick);
 window.addEventListener("keydown", processKeyPress);
+window.addEventListener("mousemove", processMouseMove);
+window.addEventListener("wheel", processWheel, { passive: false });
+document.body.addEventListener("scroll", processScroll);
 
 
 function initializeMatchesPositions(){
@@ -148,9 +184,9 @@ function initializeMatchesPositions(){
         matchesPositions.set(sectionName, new Section(sectionName, section.parentElement.parentElement, indexSection));
         for(const [indexRound, round] of rounds.entries()){
             //tohle je do budoucna lepsi udelat JS only a nemazat se se stavajicim HTML, proste to tam placnout touhle funkci
-            const roundName = document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings div:nth-child(${indexRound+1}) .legend_round_name`);
+            const roundName = document.querySelector(`.tournament_subdivision[data-sectionName="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round='${indexRound+1}'] .legend_round_name`);
             matchesPositions.get(sectionName).set(indexRound, new Round(indexRound, round, 0, roundName.value, "Free"));
-            
+
             //roundName.addEventListener("change", roundNameChange);
 
             const matches = round.querySelectorAll(".match");
@@ -162,6 +198,7 @@ function initializeMatchesPositions(){
                 offset += 200;
             }
             matchesPositions.get(sectionName).get(indexRound).updateMatchCounter();
+            adjustSectionCanvasHeight(sectionName, offset);
         }
     }
 }
@@ -179,7 +216,7 @@ export function getColumnSnappingMode(sectionName, columnIndex){
 
 function listSections(){
     return matchesPositions.keys();
-}        
+}
 
 export function updateSectionsList(){
     const oldSelectedVal = document.querySelector(`#add_match_section`).value;
@@ -217,7 +254,7 @@ export function updateRoundList(sectionName){
     }
     console.log(options);
     select.replaceChildren(...options);
-    
+
 }
 
 
@@ -228,7 +265,7 @@ export function addMatches(){
     console.log(count, round, sectionName);
     if(isNaN(parseInt(count)) || round === "" || sectionName === "")
         return;
-    
+
     latestHistoryChange.viewportHeight = matchesPositions.get(sectionName).get(round-1).element.closest("section.matches").offsetHeight;
     let lastOffset = 0;
     //pro historii: muzeme si udelat array last offsetu, a podle toho je pak zpatky pridat
@@ -239,7 +276,7 @@ export function addMatches(){
         matchesArray.push([lastOffset, matchesPositions.get(sectionName).get(round-1).getMatch(lastOffset).matchId]);
         console.log("match added");
     }
-    
+
     adjustSectionCanvasHeight(sectionName, lastOffset);
 
     latestHistoryChange.type = "add_matches";
@@ -249,7 +286,7 @@ export function addMatches(){
 
     pushHistoryObject();
 
-    
+
 }
 export function addMatchToRound(sectionName, roundIndex){
     latestHistoryChange.viewportHeight = matchesPositions.get(sectionName).get(roundIndex).element.closest("section.matches").offsetHeight;
@@ -272,12 +309,12 @@ export function adjustSectionCanvasHeight(sectionName, lastAddedMatchOffset, shr
     const maxMatchOffset = matchesPositions.get(sectionName).maxMatchOffset();
     console.log("AdjustCanvas height before", parseFloat(matches.getBoundingClientRect().height, 10,), "new offset", lastAddedMatchOffset, "max offset",  maxMatchOffset);
 
-    if(!shrinkingAllowed && parseFloat(matches.getBoundingClientRect().height, 10) >= lastAddedMatchOffset + 150){
+    /*if(!shrinkingAllowed && parseFloat(matches.getBoundingClientRect().height, 10) >= lastAddedMatchOffset + 150){
         return;
-    }
-    matches.style.height = maxMatchOffset +200 -20 + "px";//-20 compenstates for .matches padding-top
-    grid.style.height = maxMatchOffset +200 + "px";
-    connectorGrid.style.height = maxMatchOffset +200 + "px";
+    }*/
+    matches.style.minHeight = maxMatchOffset +200 -20 + "px";//-20 compenstates for .matches padding-top
+    grid.style.minHeight = maxMatchOffset +200 + "px";
+    connectorGrid.style.minHeight = maxMatchOffset +200 + "px";
 
 }
 
@@ -337,11 +374,11 @@ function loadTournamentFromLocalStorage(){ //EXPERIMENTAL!!!
     const parsed = JSON.parse(storedJson);
     matchesPositions = new Map();
     global.lastConnectorIdNumber = 1;
-    
+
     //remove old HTML
     document.querySelector(".tournament_subdivision").remove();
     for(const sectionName in parsed["sections"]){
-        const sectionElement = add_section(sectionName, parsed["sections"][sectionName]["settings"].order).element;
+        const sectionElement = add_section(sectionName, parsed["sections"][sectionName]["settings"].order, false, parsed["sections"][sectionName]["settings"].viewportHeight).element;
         //remove addRoundListener and put the element back in
         /*var old_element = sectionElement.querySelector(".add_round_button");
         var new_element = old_element.cloneNode(true);
@@ -443,7 +480,7 @@ function loadTournamentFromLocalStorage(){ //EXPERIMENTAL!!!
 
 
 
-export function add_section(name = undefined, positionIndex = null, history = false){
+export function add_section(name = undefined, positionIndex = null, history = false, viewportHeight = 800){
     if(name === undefined){
         for(let i = 1; i<16; i++){
             name = "New section " + i;
@@ -470,7 +507,7 @@ export function add_section(name = undefined, positionIndex = null, history = fa
         node = document.getElementsByClassName("tournament_subdivision")[positionIndex].insertAdjacentElement("beforebegin", html);
     }
 
-    const section = new Section(name, node, positionIndex);
+    const section = new Section(name, node, positionIndex, viewportHeight);
     matchesPositions.set(name, section);
     updateSectionsList();
 
@@ -480,6 +517,7 @@ export function add_section(name = undefined, positionIndex = null, history = fa
         latestHistoryChange.settings = section.settings;
         pushHistoryObject();
     }
+    zoom(0); //recalculates zoom on all sections including the new one so they all have the same zoom
 
     return section;
 }
@@ -494,11 +532,15 @@ export function closestNumber(base, factor, value) { //Thanks ChatGPT - you stol
         console.log("closestNumber returns", base);
         return base;
     }
-    
+    if(factor === 0){
+        console.log("closestNumber returns", base);
+        return value;
+    }
+
     const difference = value - base;
     const multiplier = Math.floor(difference / factor);
     const closest = base + multiplier * factor;
-    
+
     // Check which of the closest numbers (current or next) is closer to the value
     const nextClosest = base + (multiplier + 1) * factor;
     if (Math.abs(value - nextClosest) < Math.abs(value - closest)) {
@@ -508,6 +550,46 @@ export function closestNumber(base, factor, value) { //Thanks ChatGPT - you stol
     return closest;
 }
 
+function zoom(addition){
+    let zoom = parseFloat((global.zoomLevel + addition).toFixed(1));//toFixed because of +0.1 not being represented precisely in computers
+    let toScale = [];
+    matchesPositions.forEach(function (section) {
+        console.log(section);
+        toScale.push(section.element.querySelector(".tournament_legend"));
+        toScale.push(section.element.querySelector(".grid"));
+        toScale.push(section.element.querySelector(".matches"));
+        toScale.push(section.element.querySelector(".connectorGrid"));
+    })
+
+    toScale.forEach(element => {
+        element.style.zoom = zoom;
+    });
+    global.zoomLevel = zoom;
+    if(addition !== 0) showZoomLevel();
+}
+export function zoomIn(){
+    if(global.zoomLevel >= 2) return;
+    zoom(0.1);
+}
+
+export function zoomOut(){
+    if(global.zoomLevel <= 0.5) return;
+    zoom(-0.1);
+}
+
+export function showZoomLevel(){
+    const valElem = document.querySelector("#zoom_level_value");
+    const container = document.querySelector("#zoom_level_container");
+    valElem.textContent = Math.round(global.zoomLevel*100) + " %";
+    container.classList.remove('fading'); // reset if already applied
+    container.classList.add('showing');
+}
+
+export function hideZoomLevel(){
+    const container = document.querySelector("#zoom_level_container");
+    container.classList.remove('showing'); // reset if already applied
+    container.classList.add('fading');
+}
 
 
 
@@ -555,7 +637,7 @@ export function select_advancing_team(event, promotion){
     disabledColumns.forEach((element)=>element.classList.add("selecting_not_allowed"));
     if(match.rightConnector.right)
         match.rightConnector.right.matchElement.classList.add("selecting_not_allowed");
-    
+
     if(match.rightRelegationConnector && match.rightRelegationConnector.right)
         match.rightRelegationConnector.right.matchElement.classList.add("selecting_not_allowed")
     //nesmime povolit relagation/promotion ve STEJNE SEKCI DO STEJNEHO NEBO PREDCHAZEJICIHO KOLA
@@ -569,9 +651,35 @@ export function select_advancing_team(event, promotion){
 }
 
 export function cancelSelectAdvancing(){
-    global.advacingMatch = undefined;
     document.querySelector("#tournament_container").classList.remove("selecting_advacing_team");
     document.querySelectorAll(".selecting_not_allowed").forEach((element) => element.classList.remove("selecting_not_allowed"));
+    if(!global.advacingMatch) return;
+    const updateConnectedMatchTeams = function(connector){
+        if(connector.right.leftConnectors.upper === connector){
+            connector.right.setTeam1();
+        }
+        else if(connector.right.leftConnectors.lower === connector){
+            connector.right.setTeam2();
+        }
+        connector.right.updateTeams();
+    }
+    
+    if(global.advacingMatch.promotion){
+        if(global.advacingMatch.from.rightConnector.right){                
+            updateConnectedMatchTeams(global.advacingMatch.from.rightConnector);
+            global.advacingMatch.from.rightConnector.right.leftConnectors.delete(global.advacingMatch.from.rightConnector.generatedId);
+        }
+
+        global.advacingMatch.from.rightConnector.reset(true);
+    }
+    else if(global.advacingMatch.from.rightRelegationConnector){
+        if(global.advacingMatch.from.rightRelegationConnector.right){
+            updateConnectedMatchTeams(global.advacingMatch.from.rightRelegationConnector);
+            global.advacingMatch.from.rightRelegationConnector.right.updateTeams();
+        }
+        global.advacingMatch.from.rightRelegationConnector.reset(true);
+    }
+    global.advacingMatch = undefined;
 }
 //console.log(matchesPositions.get("Section1").get(0).getMatch(0).rightConnector.externalConnectorHTML());
 
@@ -587,14 +695,14 @@ document.querySelector("#add_match_section").addEventListener("change", (event)=
 document.querySelectorAll('#match_edit_widget_start_container input[name="match_edit_widget_start_select"]').forEach((element) =>{
     console.log("attepmting to register listener", element);
     const clickHandler = function(){
-    if(this.id === "match_edit_widget_start_select_fixed")
-        document.querySelector("#match_edit_widget_start_container #match_edit_widget_start_time").disabled = false;
-    else
-        document.querySelector("#match_edit_widget_start_container #match_edit_widget_start_time").disabled = true;
+        if(this.id === "match_edit_widget_start_select_fixed")
+            document.querySelector("#match_edit_widget_start_container #match_edit_widget_start_time").disabled = false;
+        else
+            document.querySelector("#match_edit_widget_start_container #match_edit_widget_start_time").disabled = true;
     }
 
     element.addEventListener("change", clickHandler);
-    
+
 });
 
 GlobalEvents.registerGlobalEvents();

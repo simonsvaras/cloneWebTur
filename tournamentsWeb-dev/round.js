@@ -38,11 +38,11 @@ class RoundSettings{
         this.startTime = startTime === undefined ? this.startTime : startTime;
         this.format = format === undefined ? this.format : format;
         this.snappingMode = snappingMode === undefined ? this.snappingMode : snappingMode;
-        this.snappingOffset = snappingOffset === undefined ? this.snappingOffset : snappingOffset;        
+        this.snappingOffset = snappingOffset === undefined ? this.snappingOffset : snappingOffset;
 
-        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_round_name`).value = this.name;
-        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_start`).textContent = this.startTime;
-        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings div:nth-of-type(${roundIndex+1}) .legend_format`).textContent = "BO" + this.format;
+        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round='${roundIndex+1}'] .legend_round_name`).value = this.name;
+        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round='${roundIndex+1}'] .legend_start`).textContent = this.startTime;
+        document.querySelector(`.tournament_subdivision[data-sectionname="${sectionName}"] .tournament_legend .rounds_settings .round_setting[data-round='${roundIndex+1}'] .legend_format`).textContent = "BO" + this.format;
         if(format)
             RoundSettings.resetMatchesFormat(matchesPositions.get(sectionName).get(roundIndex));
         if(startTime)
@@ -144,7 +144,7 @@ export class Round {
         const highestKey = Math.max(...this.matches.keys());
         let snappingOffset = Number((this.getSettings().snappingOffset).toFixed(2));
         snappingOffset = snappingOffset === 0? 200 : snappingOffset;
-        
+
 
         const html = document.getElementById("matchTemplate").content.cloneNode(true).firstElementChild;
         let offset;
@@ -154,7 +154,7 @@ export class Round {
             offset = highestKey === -Infinity? closestNumber(snappingOffset/2 -CONSTANT.matchHeightPx/2 -CONSTANT.matchVerticalGap/2 ,snappingOffset, 0) : closestNumber(snappingOffset/2 -CONSTANT.matchHeightPx/2 -CONSTANT.matchVerticalGap/2 ,snappingOffset, highestKey+ snappingOffset); //idk why .toFixed(2) is needed but i encountered a .0000001 trailing so ...
         html.style.top = offset + "px";
         this.addMatch(offset, new Match(html, idOverride));
-        
+
         this.element.appendChild(html);
         return offset;
     }
@@ -166,13 +166,13 @@ export class Round {
         for(let m of this.matches.values()){
             m.delete(history, overrideRoundIndex? overrideRoundIndex : roundIndex);
         }
-        
+
         const legends = this.element.parentElement.parentElement.parentElement.querySelector(".tournament_legend .rounds_settings");
         console.log(legends, roundIndex, legends.querySelector(`div[data-round="${roundIndex+1}"]`));
         legends.querySelector(`div[data-round="${roundIndex+1}"]`).remove();
         this.element.remove();
         reindexRounds(sectionName);
-        
+
         let keysToShift = [];
         for (let key of matchesPositions.get(sectionName).keys()) {
             if (key > roundIndex) {
@@ -190,9 +190,9 @@ export class Round {
             let value = matchesPositions.get(sectionName).get(key);
             matchesPositions.get(sectionName).deleteRound(key);
             matchesPositions.get(sectionName).set(key - 1, value);
-            
+
             matchesPositions.get(sectionName).get(key - 1).recalculateMatches();//recalculate its connectors
-            
+
             console.log("Testing round", position, "for match");
             console.log(matchesPositions.get(sectionName).get(key-1));
             const roundName = legends.querySelector(`div[data-round="${position}"] .legend_round_name`);

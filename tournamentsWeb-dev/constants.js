@@ -19,7 +19,15 @@ export const registeredTeams = new Map(
     [7, new Team(7, "Virtus.pro", "")],
     [8, new Team(8, "MIBR", "")],
     [9, new Team(9, "Ninjas in Pyjamas", "")],
-    [10, new Team(10, "Envy", "")]
+    [10, new Team(10, "Envy", "")],
+    [11, new Team(11, "Complexity", "")],
+    [12, new Team(12, "Getting Info", "")],
+    [13, new Team(13, "BLUEJAYS", "")],
+    [14, new Team(14, "MIGHT", "")],
+    [15, new Team(15, "Wildcard", "")],
+    [16, new Team(16, "Marsborne", "")],
+    [17, new Team(17, "NRG", "")],
+    [18, new Team(18, "Nouns", "")],
 ]);
 export const connectorCollisionHighlightColors = [
   "#e1e1e1", //connector default color
